@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/xampp/htdocs/kobetsu/application/controllers/RequirementController.php</file>
+            <file>file:/C:/xampp/htdocs/kobetsu/application/views/case/requirement/view_requirement.php</file>
+            <file>file:/C:/xampp/htdocs/kobetsu/application/models/RequirementModel.php</file>
+            <file>file:/C:/xampp/htdocs/kobetsu/application/core/MY_Controller.php</file>
+            <file>file:/C:/xampp/htdocs/kobetsu/application/models/OSModel.php</file>
+            <file>file:/C:/xampp/htdocs/kobetsu/application/models/PDLModel.php</file>
+            <file>file:/C:/xampp/htdocs/kobetsu/application/views/case/requirement/view_requirement_add.php</file>
+        </group>
+    </open-files>
+</project-private>

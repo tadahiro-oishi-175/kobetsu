@@ -1,0 +1,342 @@
+html, body {
+    height: 100%;
+    font-family: "メイリオ", sans-serif;
+    font-size: 12px;
+}
+
+#tags {
+    border: none;
+}
+
+#contents {
+    width: 98%;
+    border: solid 1px;
+    margin: 0 auto;
+    text-align: left;
+    background: #FFFFFF;
+    //margin: 0 auto;
+}
+div#head {
+    padding: 10px 10px 5px 5px;
+    margin: 0px;
+    background: #FFFFFF;
+    height: 50px;
+}
+
+div#menu {
+    padding-left: 5px;
+    padding-top: 5px;
+    height: 30px;	
+    background: #245386;
+    border-top: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+}
+div#menu ul{
+    margin: 0px;
+    padding: 0px;
+}
+
+div#menu li{
+    float: left;
+    padding: 0px;
+    margin-right: 15px;
+    margin-top: 5px;
+    margin-left: 10px;
+    color: #FFFFFF;
+    list-style: none;
+}
+
+div#main ul {
+    margin-left: 20px;    
+    margin-right: 20px;
+}
+
+div#menu a{
+    color: #FFFFFF;
+    text-decoration: none;
+}
+div#menu a:hover{
+    color: #000000;
+    background: #D7E1EC;
+}
+
+div#main {
+    //border: 1px solid black;
+    padding-top: 15px;
+    padding-left: 35px; 
+    padding-bottom: 30px;
+    background: #FFFFFF;	
+    float: left;
+    font-size: 100%;
+    //width: 1000px;
+}
+
+div#submenu {
+    width: 15%;
+    float: left;
+    background: #E4FFE9;
+    border:1px solid #D1D1D1;    
+}
+
+div#submenu h2{
+    margin:0;
+    padding:10px 5px;
+    font-size:14px;
+    border-bottom:3px solid #099;
+    background:#fff url("../application/img/bg_h2.gif") 0 100% repeat-x;
+}
+
+div#submenu ul{
+    margin:0;
+    padding:0;
+    list-style: none;
+    //border-top:1px solid #ddd;
+}
+
+div#submenu li {
+    padding:0;
+    font-size:13px;
+    line-height:2.0;
+    border-bottom: 1px dotted #999;
+}
+
+div#submenu a {
+    display:block;
+    padding:10px 0 10px 20px;
+    color:#333;
+    text-decoration:none;
+    background:url("../application/img/bg_list.gif") 10px 50% no-repeat;
+}
+
+div#submenu a.current {
+    color:#099;
+    background:#c7e9e9 url("../application/img/bg_list.gif") 10px 50% no-repeat;
+}
+
+div#submenu a:hover {
+    color:#099;
+    background:#b9e3e3 url("../application/img/bg_list.gif") 10px 50% no-repeat;
+}
+
+div#foot {    
+    background-color: #333333;
+    color:#FFFFFF;
+    font-size: 11px;
+    height: 20px;
+    border-top: 1px solid #333333;
+    padding: 0px 0px 25px 0px;
+    text-align: center;
+    clear: both;
+    margin: 2px 0 0 0;
+}
+div#foot_up {
+    clear:both;
+}
+
+div#foot p{
+    height: 10%;
+}
+
+div#case {
+    height: 80px;
+    border: 1px solid #000000;
+    background-color: lightgoldenrodyellow;
+    width: auto;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+div#case li{
+     float:left;
+     list-style: none;
+     margin-left: 5px;
+     margin-right: 5px;
+}
+
+strong {
+    color: #CC3333;
+}
+
+h1 {
+    font-size: 110%;
+    padding: 25px 15px 5px;
+    border-bottom: 1px solid #CCCCCC;
+    background: #F3F3F3;
+    font-weight: normal;
+}
+
+dl {
+    padding-left: 8px;        
+    margin-bottom: 25px;
+    margin-left: 10px;
+    margin-right: 5px;
+    border-left: 8px solid #9cc;
+}
+
+dt {
+    font-weight: bold;
+    line-height: 1.3;
+    font-size: 14px;
+    font-family: "Comic Sans MS";
+    color: #660033;
+    margin-top: 5px;
+}
+dd {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.ClickableTable, .ReadableTable {
+    border-spacing: 0;
+    font-size: 13px;
+}
+
+.ClickableTable th, .ReadableTable th {
+    color: #fff;
+    padding: 8px 15px;
+    background: #258;
+    background: -moz-linear-gradient(rgba(34,85,136,0.7), rgba(34,85,136,0.9) 50%);
+    background: -webkit-gradient(linear, 100%, 0%, 100% 50%, from(rgba(34,85,136,0.7)), to(rgba(34,85,136,0.9)));
+    font-weight: bold;
+    border-left: 1px solid #258;
+    border-top: 1px solid #258;
+    border-bottom: 1px solid #258;
+    line-height: 120%;
+    text-align: center;
+    font-size: 14px;
+    text-shadow: 0 -1px 0 rgba(34,85,136,0.9);
+    box-shadow: 0px 1px 1px rgba(255,255,255,0.3) inset;
+}
+
+.ClickableTable th:first-child, .ReadableTable th:first-child {
+    border-radius: 5px 0 0 0;
+}
+
+.ClickableTable th:last-child, .ReadableTable th:last-child {
+    border-radius: 0 5px 0 0;
+    border-right: 1px solid #258;
+    box-shadow: 2px 2px 1px rgba(0,0,0,0.1), 0px 1px 1px rgba(255,255,255,0.3) inset;
+}
+
+.ClickableTable tr td, .ReadableTable tr td {
+    cursor: pointer;
+    padding: 8px 15px;
+    border-bottom: 1px solid #84b2e0;
+    border-left: 1px solid #84b2e0;
+    text-align: center;
+}
+
+.ClickableTable tr td:last-child, .ReadableTable tr td:last-child {
+    border-right: 1px solid #84b2e0;
+    box-shadow: 2px 0px 1px rgba(0,0,0,0.1), 0px 1px 1px rgba(255,255,255,0.3) inset;
+}
+
+.ClickableTable tr, .ReadableTable tr {
+    background: #fff;
+}
+
+.ClickableTable tr:nth-child(2n+1), .ReadableTable tr:nth-child(2n+1){
+    background: #f1f6fc;
+}
+
+.ClickableTable tr:last-child td, .ReadableTable tr:last-child td {
+    box-shadow: 0px 2px 1px rgba(0,0,0,0.1);
+}
+
+.ClickableTable tr:last-child td:first-child, .ReadableTable tr:last-child td:first-child {
+    border-radius: 0 0 0 5px;
+}
+
+.ClickableTable tr:last-child td:last-child, .ReadableTable tr:last-child td:last-child {
+    border-radius: 0 0 5px 0;
+}
+
+.ClickableTable tr td a, .ReadableTable tr td a{
+    display: block;
+    width: 100%;
+    text-decoration: none;
+}
+
+.ClickableTable tr:hover{
+    background: #bbd4ee;
+}
+
+.ReadableTable tr td {
+    cursor: default !important;
+}
+
+.ReadableTable:hover {
+    background: inherit !important;
+}
+
+.ReadableTable tr .InputTermCell {
+    padding: 3px !important;
+}
+
+legend {
+    margin:5px;
+}
+.imgbox {
+    margin: 0px 0px 1em 40px;
+}
+.imgbox img{
+    border: 1px solid #666666;
+}
+.imgbox_f {
+    margin: 0px 10px 1em;
+    float: right;
+}
+.imgbox_f img{
+    border: 1px solid #666666;
+}
+
+label:hover {
+    background-color: #ffcccc;
+}
+
+input[type="submit"] {
+    margin: 3px;
+}
+
+.InputForm input[type="text"] {
+    margin: 3px;
+    padding: 3px;
+    width: 80%;
+    text-align: left;
+}
+
+textarea {
+    padding: 2px;
+    width: 95%;
+    height: 100px;
+}
+
+.InputForm {
+    border-top: 1px grey solid;
+    border-right: 1px grey solid;
+    border-bottom: 1px grey solid;
+    border-left: 5px solid #0073ea;
+    border-collapse: collapse;
+    width: 800px;
+}
+
+.InputForm th {
+    padding-left: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    width: 200px;
+    font-weight: normal !important;
+    background: #E8F5FF;
+    border-right: 1px grey solid;
+    border-top: 1px grey solid;
+    border-bottom: 1px grey solid;
+}
+
+.InputForm td {
+    //width: 400px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 7px;
+    border-top:1px grey solid;
+    border-bottom:1px grey solid;
+}

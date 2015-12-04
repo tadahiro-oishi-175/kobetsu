@@ -1,0 +1,62 @@
+html {
+    font-family: "メイリオ", sans-serif;
+    font-size: 13px;
+    width: 214mm;
+    counter-reset: section;
+    //border: 1px solid red;
+}
+
+body {
+    padding: 20px;
+    //border: solid 1px black;
+    //margin: 4mm;
+    counter-reset: page 1;
+    page: main;
+}
+
+@page main {
+    content: counter(page);
+}
+
+div#head {
+    display: none;
+}
+
+div#menu {
+    display: none;
+}
+
+div#main {
+    //border: 1px solid black;
+    padding-top: 15px;
+    padding-left: 35px; 
+    padding-bottom: 30px;
+    background: #FFFFFF;	
+    float: left;
+    font-size: 100%;
+    //width: 1000px;
+}
+
+div#submenu {
+    display: none;
+}
+
+div#foot {    
+    display: none;
+}
+
+strong {
+    color: #CC3333;
+}
+
+h1 {
+    font-size: 110%;
+    padding: 25px 15px 5px;
+    border-bottom: 1px solid #CCCCCC;
+    background: #F3F3F3;
+    font-weight: normal;
+}
+
+h2 {
+    text-align: center;
+}
