@@ -20,6 +20,7 @@ class MY_Model extends CI_Model {
     protected $table_case_master = 'case_master';
     protected $table_requirement_master = 'requirement_master';
     protected $table_spec_master = 'spec_master';
+    protected $table_development_master = 'development_master';
     protected $table_casetype_master = 'casetype_master';
     protected $table_tag_master = 'tag_master';
     protected $table_pdl_master = 'pdl_master';
@@ -55,6 +56,11 @@ class MY_Model extends CI_Model {
     protected $table_spec_os = 'spec_os';
     protected $table_spec_pdl = 'spec_pdl';
     protected $table_spec_product = 'spec_product';
+    
+    // development tables
+    protected $table_development_pdl = 'development_pdl';
+    protected $table_development_lang = 'development_lang';
+    protected $table_development_os = 'development_os';
     
     // history tables
     protected $table_worker_history = 'worker_history';

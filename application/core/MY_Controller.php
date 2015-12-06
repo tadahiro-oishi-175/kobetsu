@@ -18,6 +18,7 @@ class MY_Controller extends CI_Controller {
         $this->load->model('casemodel', 'case_model', TRUE);
         $this->load->model('requirementmodel', 'requirement_model', TRUE);
         $this->load->model('specmodel', 'spec_model', TRUE);
+        $this->load->model('developmentmodel', 'development_model', TRUE);
         $this->load->model('tagmodel', 'tag_model', TRUE);
         $this->load->model('pdlmodel', 'pdl_model', TRUE);
         $this->load->model('langmodel', 'lang_model', TRUE);
@@ -38,6 +39,30 @@ class MY_Controller extends CI_Controller {
             redirect("auth/login/" . $this->uri->uri_string());
         }
     }
+    
+    protected function GetProductSelectionView($category = NULL, $id = NULL, $isEdit = NULL) {
+        switch($category) {
+            case 'Requirement':
+                $where = array('RequirementID' => $id);
+                break;
+            case 'Spec':
+                $where = array('SpecID' => $id);
+                break;
+            default:
+                break;
+        }
+        //$result['supportedProductID'] = $this->product_model->getSupportedProductIDArray($category, $where);
+        
+        $result = array();
+        $ids = $this->product_model->getSupportedProductIDArray($category, $where);
+        foreach($ids as $id) {
+            $obj = $this->product_model->getProduct(array('ProductID' => $id));
+            array_push($result, $obj->ProductName);
+        }
+        return '<p>'.implode(',', $result).'</p>';
+//        $result['isEdit'] = $isEdit;
+//        return $this->load->view('product/view_product_supported', $result, TRUE);
+    }
 
     protected function GetOSSelectionView($category = NULL, $id = NULL, $isEdit = NULL) {
         $result['x86'] = $this->db->get_where('os_master', array('ArcID' => 1))->result();
@@ -54,8 +79,16 @@ class MY_Controller extends CI_Controller {
                 return $this->load->view('os/view_os_selection', $result, TRUE);
         }
         $result['supportedOSID'] = $this->os_model->getSupportedOSIDArray($category, $where);
-        $result['isEdit'] = $isEdit;
-        return $this->load->view('os/view_os_supported', $result, TRUE);
+        if($isEdit) {
+            return $this->load->view('os/view_os_supported', $result, TRUE);
+        } else {
+            $os = array();
+            foreach($result['supportedOSID'] as $OSID) {
+                $osObj = $this->os_model->getOS(array('OSID' => $OSID));
+                array_push($os, $osObj->OSName);
+            }
+            return implode(',', $os);
+        }
     }
 
     protected function GetPDLSelectionView($category = NULL, $id = NULL, $isEdit = NULL) {
@@ -71,8 +104,16 @@ class MY_Controller extends CI_Controller {
                 return $this->load->view('pdl/view_pdl_selection', $result, TRUE);
         }
         $result['supportedPDLID'] = $this->pdl_model->getSupportedPDLIDArray($category, $where);
-        $result['isEdit'] = $isEdit;
-        return $this->load->view('pdl/view_pdl_supported', $result, TRUE);
+        if($isEdit) {
+            return $this->load->view('pdl/view_pdl_supported', $result, TRUE);
+        } else {
+            $pdl = array();
+            foreach($result['supportedPDLID'] as $PDLID) {
+                $pdlObj = $this->pdl_model->getPDL(array('PDLID' => $PDLID));
+                array_push($pdl, $pdlObj->PDLName);
+            }
+            return implode(',', $pdl);
+        }
     }
 
     protected function BeginTransaction() {

@@ -50,6 +50,10 @@ class RequirementModel extends MY_Model {
 
     public function updateTargetInfo($requirementID, $target, $valueArray) {
         switch ($target) {
+            case 'Product':
+                $table = $this->table_requirement_product;
+                $column = 'ProductID';
+                break;
             case 'OS':
                 $table = $this->table_requirement_os;
                 $column = 'OSID';

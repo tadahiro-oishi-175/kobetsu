@@ -8,8 +8,24 @@ and open the template in the editor.
     <head>
         <meta charset="UTF-8">        
         <link href="<?= base_url(); ?>application/css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="<?= base_url(); ?>application/css/multi-select.css" rel="stylesheet" type="text/css">
         <script src="<?= base_url() ?>application/js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="<?= base_url() ?>application/js/jquery.multi-select.js" type="text/javascript" charset="utf-8"></script>
         <title>Edit Requirement</title>
+        <script>
+            $(document).ready(function () {
+                $('#selectProduct').multiSelect({
+                    keepOrder: false,
+                    selectableHeader: "<div class='header_item'>機種リスト</div>",
+                    selectionHeader: "<div class='header_item'>対象機種</div>",
+                });
+            });
+        </script>
+        <style>
+            .ms-container{
+                background: transparent url('<?= base_url() ?>application/img/switch.png') no-repeat 50% 50%;
+            }
+        </style>
     </head>
     <body>
         <div id="main">
@@ -48,7 +64,7 @@ and open the template in the editor.
 
                 <tr>
                     <th>対象機種</th>
-                    <td></td>
+                    <td><?= form_multiselect('targetProduct[]', $allProductNames, $supportedProductIDs, 'id="selectProduct"') ?></td>
                 </tr>
 
                 <tr>
@@ -91,7 +107,6 @@ and open the template in the editor.
                     <td><?= form_textarea('ReqRemark', $reqObj->ReqRemark) ?></td>
                 </tr>
             </table>
-
             <?php echo form_submit('submit_EditRequirement', '保存'); ?>
             <?php echo form_close(); ?> 
         </div>

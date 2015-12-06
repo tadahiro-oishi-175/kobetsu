@@ -28,6 +28,7 @@ class RequirementController extends MY_Controller {
         $caseObj->CaseTypeName = $this->case_model->getCaseTypeObj(array('CaseTypeID' => $caseObj->CaseTypeID))->CaseTypeName;
         $result['caseObj'] = $caseObj;
         $result['reqObj'] = $reqObj;
+        $result['supportedProducts'] = $this->GetProductSelectionView('Requirement', $RequirementID, $isEdit = FALSE);
         $result['selectOS'] = $this->GetOSSelectionView('Requirement', $RequirementID, $isEdit = FALSE);
         $result['selectPDL'] = $this->GetPDLSelectionView('Requirement', $RequirementID, $isEdit = FALSE);
         $result['tags'] = $this->tag_model->getTagDataListHtml(array('CaseID' => $caseID));
@@ -49,6 +50,10 @@ class RequirementController extends MY_Controller {
             );
             $requirementID = $this->requirement_model->insertRequirement($requirementData);
 
+             // Update Target Product Information
+            $targetProduct = ($this->input->post('targetProduct') != NULL) ? $this->input->post('targetProduct') : array();
+            $this->UpdateTargetInfo('Requirement', $requirementID, 'Product', $targetProduct);
+            
             // Update Target OS Information
             $targetOS = ($this->input->post('targetOS') != NULL) ? $this->input->post('targetOS') : array();
             $this->UpdateTargetInfo('Requirement', $requirementID, 'OS', $targetOS);
@@ -62,6 +67,7 @@ class RequirementController extends MY_Controller {
         } else {
             $result['CaseID'] = $CaseID;
             $result['caseObj'] = $this->case_model->getCase(array('CaseID' => $CaseID));
+            $result['allProductNames'] = $this->product_model->getAllProductNameArray();
             $result['selectOS'] = $this->GetOSSelectionView();
             $result['selectPDL'] = $this->GetPDLSelectionView();
             $this->load->view('case/requirement/view_requirement_add', $result);
@@ -81,6 +87,10 @@ class RequirementController extends MY_Controller {
             );
             $this->requirement_model->updateRequirement(array('RequirementID' => $RequirementID), $RequirementData);
 
+            // Update Target Product Information
+            $targetProduct = ($this->input->post('targetProduct') != NULL) ? $this->input->post('targetProduct') : array();
+            $this->UpdateTargetInfo('Requirement', $RequirementID, 'Product', $targetProduct);
+            
             // Update Target OS Information
             $targetOS = ($this->input->post('targetOS') != NULL) ? $this->input->post('targetOS') : array();
             $this->UpdateTargetInfo('Requirement', $RequirementID, 'OS', $targetOS);
@@ -94,6 +104,8 @@ class RequirementController extends MY_Controller {
         } else {
             $reqObj = $this->requirement_model->getRequirement(array('RequirementID' => $RequirementID));
             $caseObj = $this->case_model->getCase(array('CaseID' => $reqObj->CaseID));
+            $result['allProductNames'] = $this->product_model->getAllProductNameArray();
+            $result['supportedProductIDs'] = $this->product_model->getSupportedProductIDArray('Requirement', array('RequirementID' => $RequirementID));
             $result['selectOS'] = $this->GetOSSelectionView('Requirement', $RequirementID, $isEdit = TRUE);
             $result['selectPDL'] = $this->GetPDLSelectionView('Requirement', $RequirementID, $isEdit = TRUE);
             $result['caseTypeNames'] = $this->case_model->getCaseTypeNames();

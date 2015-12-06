@@ -47,7 +47,7 @@ and open the template in the editor.
 
                 <tr>
                     <th>対象機種</th>
-                    <td></td>
+                    <td><?= $supportedProducts ?></td>
                 </tr>
                 <tr>
                     <th>対象OS</th>

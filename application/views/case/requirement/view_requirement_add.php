@@ -8,7 +8,18 @@ and open the template in the editor.
     <head>
         <meta charset="UTF-8">        
         <link href="<?= base_url(); ?>application/css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="<?= base_url(); ?>application/css/multi-select.css" rel="stylesheet" type="text/css">
         <script src="<?= base_url() ?>application/js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="<?= base_url() ?>application/js/jquery.multi-select.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+            $(document).ready(function () {
+                $('#selectProduct').multiSelect({
+                    keepOrder: false,
+                    selectableHeader: "<div class='header_item'>機種リスト</div>",
+                    selectionHeader: "<div class='header_item'>対象機種</div>",
+                });
+            });
+        </script>
         <title>Add Requirement</title>
     </head>
     <body>        
@@ -48,19 +59,19 @@ and open the template in the editor.
 
                 <tr>
                     <th>対象機種</th>
-                    <td></td>
+                    <td><?= form_multiselect('targetProduct[]', $allProductNames, '', 'id="selectProduct"') ?></td>
                 </tr>
 
                 <tr>
                     <th>対象OS</th>
                     <td><?= $selectOS ?></td>
                 </tr>
-                
+
                 <tr>
                     <th>対象PDL</th>
                     <td><?= $selectPDL ?></td>
                 </tr>
-                
+
                 <tr>
                     <th>対象言語</th>
                     <td></td>

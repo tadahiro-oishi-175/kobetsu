@@ -11,32 +11,33 @@
  *
  * @author Oishi-Tadahiro
  */
-class SpecModel extends MY_Model {
+class DevelopmentModel extends MY_Model {
 
     function __construct() {
         parent::__construct();
-        $this->my_table_name = $this->table_spec_master;
+        $this->my_table_name = $this->table_development_master;
     }
 
-    public function getSpec($where) {
+    public function getDevelopment($where) {
         return $this->GetRecord($this->my_table_name, $where);
     }
 
-    public function insertSpec($data) {
+    public function insertDevelopment($data) {
         return $this->InsertRecord($this->my_table_name, $data);
     }
 
-    public function updateSpec($where, $data) {
+    public function updateDevelopment($where, $data) {
         return $this->UpdateRecord($this->my_table_name, $where, $data);
     }
 
-    public function deleteSpec($where) {
-        $this->DeleteRecord($this->table_spec_os, $where);
-        $this->DeleteRecord($this->table_spec_product, $where);
+    public function deleteDevelopment($where) {
+        $this->DeleteRecord($this->table_development_os, $where);
+        $this->DeleteRecord($this->table_development_pdl, $where);
+        $this->DeleteRecord($this->table_development_lang, $where);
         return $this->DeleteRecord($this->my_table_name, $where);
     }
 
-    public function updateTargetInfo($specID, $target, $valueArray) {
+    public function updateTargetInfo($developmentID, $target, $valueArray) {
         switch ($target) {
             case 'Product':
                 $table = $this->table_spec_product;
