@@ -27,6 +27,7 @@ class SpecController extends MY_Controller {
         $result['caseObj'] = $caseObj;
         $result['CaseID'] = $reqObj->CaseID;
         $result['selectOS'] = $this->GetOSSelectionView('Spec', $specObj->SpecID, $isEdit = FALSE);
+        $result['selectPDL'] = $this->GetPDLSelectionView('Spec', $SpecID, $isEdit = FALSE);
         $result['specView'] = $this->load->view('case/spec/table/view_spec_table', $result, TRUE);
 
         $this->load->view('case/spec/view_spec', $result);
@@ -51,6 +52,10 @@ class SpecController extends MY_Controller {
             $targetOS = ($this->input->post('targetOS') != NULL) ? $this->input->post('targetOS') : array();
             $this->UpdateTargetInfo('Spec', $specID, 'OS', $targetOS);
 
+            // Update Target PDL Information
+            $tagetPDLs = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
+            $this->UpdateTargetInfo('Spec', $specID, 'PDL', $tagetPDLs);
+
             $this->EndTransaction();
             $this->ViewSpecDetail($specID);
         } else {
@@ -62,6 +67,7 @@ class SpecController extends MY_Controller {
 
             // OS選択の初期値はRequirementから引き継ぐ
             $result['selectOS'] = $this->GetOSSelectionView('Requirement', $reqObj->RequirementID, $isEdit = FALSE);
+            $result['selectPDL'] = $this->GetPDLSelectionView('Requirement', $reqObj->RequirementID, $isEdit = FALSE);
             $result['specView'] = $this->load->view('case/spec/table/view_spec_table_add', $result, TRUE);
             $this->load->view('case/spec/view_spec_add', $result);
         }
@@ -85,6 +91,10 @@ class SpecController extends MY_Controller {
             $targetOS = ($this->input->post('targetOS') != NULL) ? $this->input->post('targetOS') : array();
             $this->UpdateTargetInfo('Spec', $SpecID, 'OS', $targetOS);
 
+            // Update Target PDL Information
+            $targetPDL = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
+            $this->UpdateTargetInfo('Spec', $SpecID, 'PDL', $targetPDL);
+            
             $this->EndTransaction();
             $this->ViewSpecDetail($SpecID);
         } else {
@@ -96,6 +106,7 @@ class SpecController extends MY_Controller {
             $result['reqObj'] = $reqObj;
             $result['caseObj'] = $caseObj;
             $result['selectOS'] = $this->GetOSSelectionView('Spec', $specObj->SpecID, $isEdit = FALSE);
+            $result['selectPDL'] = $this->GetPDLSelectionView('Spec', $specObj->SpecID, $isEdit = FALSE);
             $result['specView'] = $this->load->view('case/spec/table/view_spec_table_edit', $result, TRUE);
             $this->load->view('case/spec/view_spec_edit', $result);
         }
@@ -109,7 +120,7 @@ class SpecController extends MY_Controller {
         $result['specObj'] = $specObj;
         $result['reqObj'] = $reqObj;
         $result['caseObj'] = $caseObj;
-        
+
         $result['title'] = $this->case_model->getCaseTypeLabel($caseObj->CaseTypeID) . $caseObj->CaseNo . ':' . $caseObj->CaseTitle;
         $this->load->view('document/agree_doc', $result, FALSE);
         //$view = $this->load->view('document/agree_doc', NULL, TRUE);

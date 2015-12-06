@@ -47,6 +47,10 @@ and open the template in the editor.
                     <td><?= $selectOS ?></td>
                 </tr>
                 <tr>
+                    <th>対象PDL</th>
+                    <td><?= $selectPDL ?></td>
+                </tr>
+                <tr>
                     <th>対象言語</th>
                     <td></td>
                 </tr>

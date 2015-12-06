@@ -39,17 +39,40 @@ class SpecModel extends MY_Model {
     public function updateTargetInfo($specID, $target, $valueArray) {
         switch ($target) {
             case 'OS':
-                $this->DeleteRecord($this->table_spec_os, array('SpecID' => $specID));
-                foreach ($valueArray as $value) {
-                    $data = array(
-                        'SpecID' => $specID,
-                        'OSID' => $value,
-                    );
-                    $this->InsertRecord($this->table_spec_os, $data);
-                }
+                $table = $this->table_spec_os;
+                $column = 'OSID';
+                break;
+            case 'PDL':
+                $table = $this->table_spec_pdl;
+                $column = 'PDLID';
                 break;
             default:
                 break;
         }
+        $this->DeleteRecord($table, array('SpecID' => $specID));
+        foreach ($valueArray as $value) {
+            $data = array(
+                'SpecID' => $specID,
+                $column => $value,
+            );
+            $this->InsertRecord($table, $data);
+        }
     }
+
+//    public function updateTargetInfo($specID, $target, $valueArray) {
+//        switch ($target) {
+//            case 'OS':
+//                $this->DeleteRecord($this->table_spec_os, array('SpecID' => $specID));
+//                foreach ($valueArray as $value) {
+//                    $data = array(
+//                        'SpecID' => $specID,
+//                        'OSID' => $value,
+//                    );
+//                    $this->InsertRecord($this->table_spec_os, $data);
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 }
