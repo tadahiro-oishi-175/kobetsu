@@ -10,6 +10,7 @@
     <body>
         <div id="main">
             <?= form_open("SpecController/EditSpecDevelopment/$specObj->SpecID/$prodObj->ProductID"); ?>
+            <?= form_hidden('DevelopmentID', $devObj->DevelopmentID); ?>
             <label>仕様詳細</label>
             <table class="InputForm">
                 <tr>
@@ -23,6 +24,10 @@
                 <tr>
                     <th>対象言語</th>
                     <td></td>
+                </tr>
+                <tr>
+                    <th>ドライバーバージョン</th>
+                    <td><?= form_input('DevDriverVersion', $devObj->DevDriverVersion, 'style="width:150px;"')?> </td>
                 </tr>
             </table>
             <?php echo form_submit('submit_EditSpecDevelopment', '保存'); ?>

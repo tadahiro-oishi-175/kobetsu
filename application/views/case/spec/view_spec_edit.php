@@ -21,11 +21,23 @@ and open the template in the editor.
                     $(".IfMultiProduct").hide();
                     $(".IfNotMultiProduct").show();
                 }
-                
+
                 $('#selectProduct').multiSelect({
                     keepOrder: false,
                     selectableHeader: "<div class='header_item'>機種リスト</div>",
                     selectionHeader: "<div class='header_item'>対象機種</div>",
+                    afterSelect: function (values) {
+                        ProdCount++;
+                        $(".IfMultiProduct").show();
+                        $(".IfNotMultiProduct").hide();
+                    },
+                    afterDeselect: function (values) {
+                        ProdCount--;
+                        if (ProdCount < 2) {
+                            $(".IfMultiProduct").hide();
+                            $(".IfNotMultiProduct").show();
+                        }
+                    },
                 });
             });
         </script>
@@ -61,21 +73,22 @@ and open the template in the editor.
                 </tr>
                 <tr>
                     <th>WHQL取得の有無</th>
-                    <td><?= $specObj->SpecWHQL ? '要' : '不要' ?></td>
+                    <td>要<?= form_radio('SpecWHQL', 1, $specObj->SpecWHQL ? TRUE : FALSE) ?> 　不要<?= form_radio('SpecWHQL', 0, $specObj->SpecWHQL ? FALSE : TRUE); ?></td>
                 </tr>
+
                 <tr>
                     <th>インストーラ対応の有無</th>
-                    <td><?= $specObj->SpecCSW ? '要' : '不要' ?></td>
+                    <td>要<?= form_radio('SpecCSW', 1, $specObj->SpecCSW ? TRUE : FALSE) ?> 　不要<?= form_radio('SpecCSW', 0, $specObj->SpecCSW ? FALSE : TRUE); ?></td>
                 </tr>
 
                 <tr>
                     <th>MakeDisk対応の有無</th>
-                    <td><?= $specObj->SpecSUT ? '要' : '不要' ?></td>
+                    <td>要<?= form_radio('SpecSUT', 1, $specObj->SpecSUT ? TRUE : FALSE) ?> 　不要<?= form_radio('SpecSUT', 0, $specObj->SpecSUT ? FALSE : TRUE); ?></td>
                 </tr>
 
                 <tr>
                     <th>Readme対応の有無</th>
-                    <td><?= $specObj->SpecReadme ? '要' : '不要' ?></td>
+                    <td>要<?= form_radio('SpecReadme', 1, $specObj->SpecReadme ? TRUE : FALSE) ?> 　不要<?= form_radio('SpecReadme', 0, $specObj->SpecReadme ? FALSE : TRUE); ?></td>
                 </tr>
                 <tr class="IfNotMultiProduct">
                     <th>ドライバーバージョン</th>

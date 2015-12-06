@@ -16,7 +16,7 @@
         </tr>
         <tr>
             <th>ドライバーバージョン</th>
-            <td></td>
+            <td><?= isset($devObj)? $devObj->DevDriverVersion : ''?></td>
         </tr>
     </table>
     <?= form_close() ?>

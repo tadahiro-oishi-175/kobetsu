@@ -46,6 +46,9 @@ class PDLModel extends MY_Model {
             case 'Spec':
                 $table = $this->table_spec_pdl;
                 break;
+            case 'Development':
+                $table = $this->table_development_pdl;
+                break;
             default:
                 $table = '';
                 break;

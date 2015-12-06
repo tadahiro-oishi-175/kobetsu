@@ -53,7 +53,7 @@ class SpecController extends MY_Controller {
             // Update Target Product Information
             $targetProduct = ($this->input->post('targetProduct') != NULL) ? $this->input->post('targetProduct') : array();
             $this->UpdateTargetInfo('Spec', $specID, 'Product', $targetProduct);
-            
+
             // Update Target OS Information
             $targetOS = ($this->input->post('targetOS') != NULL) ? $this->input->post('targetOS') : array();
             $this->UpdateTargetInfo('Spec', $specID, 'OS', $targetOS);
@@ -73,7 +73,7 @@ class SpecController extends MY_Controller {
             $result['caseBasicView'] = $this->load->view('case/view_case_basic', $result, TRUE);
 
             $result['allProductNames'] = $this->product_model->getAllProductNameArray();
-            
+
             // OS,PDL,機種の選択状態の初期値はRequirementから引き継ぐ
             $result['supportedProductIDs'] = $this->product_model->getSupportedProductIDArray('Requirement', array('RequirementID' => $reqObj->RequirementID));
             $result['productCount'] = count($result['supportedProductIDs']);
@@ -182,19 +182,64 @@ class SpecController extends MY_Controller {
 //        }
         return $result;
     }
-    
-    public function EditSpecDevelopment($specID, $productID) {
-        $specObj = $this->spec_model->getSpec(array('SpecID' => $specID));
-        $prodObj = $this->product_model->getProduct(array('ProductID' => $productID));
-        $devObj = $this->development_model->getDevelopment(array('SpecID' => $specID, 'ProductID' => $productID));
-        
-        $result['specObj'] = $specObj;
-        $result['prodObj'] = $prodObj;
-        if($devObj) {
-            $result['devObj'] = $devObj;
-            $this->load->view('development/table/view_development_table_edit', $result);
+
+    public function AddSpecDevelopment($specID, $productID) {
+        if ($this->input->post('submit_AddSpecDevelopment') != NULL) {
+            $this->BeginTransaction();
+
+            // Add New Development Data
+            $devData = array(
+                'SpecID' => $specID,
+                'ProductID' => $productID,
+                'DevDriverVersion' => $this->input->post('DevDriverVersion'),
+            );
+            $develomentID = $this->development_model->insertDevelopment($devData);
+
+            // Update Target PDL Information
+            $targetPDL = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
+            $this->UpdateTargetInfo('Development', $develomentID, 'PDL', $targetPDL);
+
+            $this->EndTransaction();
+            $this->ViewSpecDetail($specID);
         } else {
+            $result['specObj'] = $this->spec_model->getSpec(array('SpecID' => $specID));
+            $result['prodObj'] = $this->product_model->getProduct(array('ProductID' => $productID));
+            $result['selectPDL'] = $this->GetPDLSelectionView('Spec', $specID, TRUE);
             $this->load->view('development/table/view_development_table_add', $result);
+        }
+    }
+
+    public function EditSpecDevelopment($specID, $productID) {
+        if ($this->input->post('submit_EditSpecDevelopment') != NULL) {
+            $this->BeginTransaction();
+            
+            $developmentID = $this->input->post('DevelopmentID');
+            
+            $devData = array(
+                'DevDriverVersion' => $this->input->post('DevDriverVersion'),
+            );
+
+            $this->development_model->updateDevelopment(array('DevelopmentID' => $developmentID), $devData);
+            
+            // Update Target PDL Information
+            $targetPDL = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
+            $this->UpdateTargetInfo('Development', $developmentID, 'PDL', $targetPDL);
+            $this->EndTransaction();
+            $this->ViewSpecDetail($specID);
+        } else {
+            $specObj = $this->spec_model->getSpec(array('SpecID' => $specID));
+            $prodObj = $this->product_model->getProduct(array('ProductID' => $productID));
+            $devObj = $this->development_model->getDevelopment(array('SpecID' => $specID, 'ProductID' => $productID));
+
+            $result['specObj'] = $specObj;
+            $result['prodObj'] = $prodObj;
+            if ($devObj) {
+                $result['devObj'] = $devObj;
+                $result['selectPDL'] = $this->GetPDLSelectionView('Development', $devObj->DevelopmentID, TRUE);
+                $this->load->view('development/table/view_development_table_edit', $result);
+            } else {
+                redirect("SpecController/AddSpecDevelopment/$specID/$productID");
+            }
         }
     }
 
@@ -206,9 +251,10 @@ class SpecController extends MY_Controller {
             $result['prodObj'] = $this->product_model->getProduct(array('ProductID' => $productID));
             $result['productCount'] = count($supportedProductIDs);
             $devObj = $this->development_model->getDevelopment(array('SpecID' => $specID, 'ProductID' => $productID));
-            if($devObj){
-                $result['selectOS'] = $this->GetOSSelectionView('Development', $devObj->DevelopmentID, $isEdit);
-                $result['selectPDL'] = $this->GetPDLSelectionView('Development', $devObj->DevelopmentID, $isEdit);
+            if ($devObj) {
+                $result['selectOS'] = $this->GetOSSelectionView('Development', $devObj->DevelopmentID, FALSE);
+                $result['selectPDL'] = $this->GetPDLSelectionView('Development', $devObj->DevelopmentID, FALSE);
+                $result['devObj'] = $devObj;
             } else {
                 $result['selectOS'] = $this->GetOSSelectionView('Spec', $specID, $isEdit);
                 $result['selectPDL'] = $this->GetPDLSelectionView('Spec', $specID, $isEdit);

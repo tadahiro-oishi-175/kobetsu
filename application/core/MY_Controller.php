@@ -100,6 +100,9 @@ class MY_Controller extends CI_Controller {
             case 'Spec':
                 $where = array('SpecID' => $id);
                 break;
+            case 'Development':
+                $where = array('DevelopmentID' => $id);
+                break;
             default:
                 return $this->load->view('pdl/view_pdl_selection', $result, TRUE);
         }
@@ -132,6 +135,8 @@ class MY_Controller extends CI_Controller {
             case 'Spec':
                 $this->spec_model->updateTargetInfo($id, $target, $valueArray);
                 break;
+            case 'Development':
+                $this->development_model->updateTargetInfo($id, $target, $valueArray);
             default:
                 break;
         }

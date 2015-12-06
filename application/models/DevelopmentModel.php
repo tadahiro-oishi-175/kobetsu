@@ -39,25 +39,21 @@ class DevelopmentModel extends MY_Model {
 
     public function updateTargetInfo($developmentID, $target, $valueArray) {
         switch ($target) {
-            case 'Product':
-                $table = $this->table_spec_product;
-                $column = 'ProductID';
-                break;
             case 'OS':
                 $table = $this->table_spec_os;
                 $column = 'OSID';
                 break;
             case 'PDL':
-                $table = $this->table_spec_pdl;
+                $table = $this->table_development_pdl;
                 $column = 'PDLID';
                 break;
             default:
                 break;
         }
-        $this->DeleteRecord($table, array('SpecID' => $specID));
+        $this->DeleteRecord($table, array('DevelopmentID' => $developmentID));
         foreach ($valueArray as $value) {
             $data = array(
-                'SpecID' => $specID,
+                'DevelopmentID' => $developmentID,
                 $column => $value,
             );
             $this->InsertRecord($table, $data);
