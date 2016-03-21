@@ -72,5 +72,35 @@ class ProductModel extends MY_Model {
         }
         return $result;
     }
+    
+    public function getSupportedProducts($category, $where) {
+        switch($category) {
+            case 'Requirement':
+                $table = $this->table_requirement_product;
+                break;
+            case 'Spec':
+                $table = $this->table_spec_product;
+            break;
+            default:
+                $table = '';
+                break;
+        }
+        $objs = $this->db->get_where($table, $where)->result();
+        $array = array();
+        foreach($objs as $obj) {
+            $prodName = $this->getProduct(array('ProductID' => $obj->ProductID))->ProductName;
+            $array += array($obj->ProductID => $prodName);
+        }
+        return $array;
+    }
+    
+    public function getAllProductNames() {
+        $result = array();
+        $objs = $this->getAllProducts();
+        foreach($objs as $obj) {
+            $result += array($obj->ProductID => $obj->ProductName);
+        }
+        return $result;
+    }
 
 }

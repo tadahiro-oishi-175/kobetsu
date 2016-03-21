@@ -18,30 +18,35 @@ class SpecController extends MY_Controller {
     }
 
     public function ViewSpecDetail($SpecID) {
+        $caseID = $this->GetCaseIDBySpecID($SpecID);
         $specObj = $this->spec_model->getSpec(array('SpecID' => $SpecID));
-        $caseObj = $this->case_model->getCase(array('CaseID' => $specObj->CaseID));
-        $reqObj = $this->requirement_model->getRequirement(array('CaseID' => $specObj->CaseID));
+        $caseObj = $this->case_model->getCase(array('CaseID' => $caseID));
+        $reqObj = $this->requirement_model->getRequirement(array('CaseID' => $caseID));
 
         $result['specObj'] = $specObj;
         $result['reqObj'] = $reqObj;
         $result['caseObj'] = $caseObj;
-        $result['CaseID'] = $reqObj->CaseID;
+        $result['CaseID'] = $caseID;
         $result['selectOS'] = $this->GetOSSelectionView('Spec', $SpecID, $isEdit = NULL);
-        $result['selectPDL'] = $this->GetPDLSelectionView('Spec', $SpecID, $isEdit);
-        $result['caseBasicView'] = $this->load->view('case/view_case_basic', $result, TRUE);
+        $result['selectPDL'] = $this->GetPDLSelectionView('Spec', $SpecID, $isEdit = NULL);
+        $result['selectLang'] = $this->GetLangSelectionView('Spec', $SpecID, $isEdit = NULL);
+        $result['caseBasicView'] = $this->GetCaseBasicView($caseID);
+        $result['caseInfoView'] = $this->GetCaseInfoView($caseID);
+        $result['reqInfoView'] = $this->GetRequirementInfoView($caseID);
         $result['supportedProducts'] = $this->GetProductSelectionView('Spec', $SpecID, $isEdit = FALSE);
-        $result['specView'] = $this->getSpecDevlopmentView($specObj);
-
-        $this->load->view('case/spec/view_spec', $result);
+        $result['progress'] = $this->GetProgressView('Spec', $caseID, $SpecID);
+//$result['specView'] = $this->GetSpecDevlopmentView($specObj);
+        $result['docsView'] = $this->getAgreeDocTableView($SpecID);
+        $this->load->view('spec/view_spec', $result);
     }
 
     public function AddNewSpec($CaseID) {
-        if ($this->input->post('submit_AddNewSpec') != NULL) {
+        if ($this->input->post('submit_AddNewSpec') && $this->form_validation->run('SpecValidation')) {
             $this->BeginTransaction();
 
-            // Add New Spec Data
+// Add New Spec Data
             $specData = array(
-                'CaseID' => $CaseID,
+                'RequirementID' => $this->GetRequirementIDByCaseID($CaseID),
                 'SpecDetail' => $this->input->post('SpecDetail'),
                 'SpecWHQL' => $this->input->post('SpecWHQL'),
                 'SpecCSW' => $this->input->post('SpecCSW'),
@@ -50,17 +55,21 @@ class SpecController extends MY_Controller {
             );
             $specID = $this->spec_model->insertSpec($specData);
 
-            // Update Target Product Information
+// Update Target Product Information
             $targetProduct = ($this->input->post('targetProduct') != NULL) ? $this->input->post('targetProduct') : array();
             $this->UpdateTargetInfo('Spec', $specID, 'Product', $targetProduct);
 
-            // Update Target OS Information
+// Update Target OS Information
             $targetOS = ($this->input->post('targetOS') != NULL) ? $this->input->post('targetOS') : array();
             $this->UpdateTargetInfo('Spec', $specID, 'OS', $targetOS);
 
-            // Update Target PDL Information
-            $tagetPDLs = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
-            $this->UpdateTargetInfo('Spec', $specID, 'PDL', $tagetPDLs);
+// Update Target PDL Information
+            $targetPDLs = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
+            $this->UpdateTargetInfo('Spec', $specID, 'PDL', $targetPDLs);
+
+// Update Target Lang Information
+            $targetLangs = ($this->input->post('targetLang') != NULL) ? $this->input->post('targetLang') : array();
+            $this->UpdateTargetInfo('Spec', $specID, 'Lang', $targetLangs);
 
             $this->EndTransaction();
             $this->ViewSpecDetail($specID);
@@ -70,21 +79,24 @@ class SpecController extends MY_Controller {
             $result['caseObj'] = $caseObj;
             $result['reqObj'] = $reqObj;
             $result['CaseID'] = $caseObj->CaseID;
-            $result['caseBasicView'] = $this->load->view('case/view_case_basic', $result, TRUE);
-
+            $result['caseBasicView'] = $this->GetCaseBasicView($caseObj->CaseID);
+            $result['caseInfoView'] = $this->GetCaseInfoView($caseObj->CaseID);
+            $result['reqInfoView'] = $this->GetRequirementInfoView($caseObj->CaseID);
             $result['allProductNames'] = $this->product_model->getAllProductNameArray();
 
-            // OS,PDL,機種の選択状態の初期値はRequirementから引き継ぐ
+// OS,PDL,言語,機種の選択状態の初期値はRequirementから引き継ぐ
             $result['supportedProductIDs'] = $this->product_model->getSupportedProductIDArray('Requirement', array('RequirementID' => $reqObj->RequirementID));
             $result['productCount'] = count($result['supportedProductIDs']);
             $result['selectOS'] = $this->GetOSSelectionView('Requirement', $reqObj->RequirementID, TRUE);
             $result['selectPDL'] = $this->GetPDLSelectionView('Requirement', $reqObj->RequirementID, TRUE);
-            $this->load->view('case/spec/view_spec_add', $result);
+            $result['selectLang'] = $this->GetLangSelectionView('Requirement', $reqObj->RequirementID, TRUE);
+            $result['progress'] = $this->GetProgressView('Spec', $caseObj->CaseID, NULL);
+            $this->load->view('spec/view_spec_add', $result);
         }
     }
 
     public function EditSpec($SpecID) {
-        if ($this->input->post('submit_EditSpec') != NULL) {
+        if ($this->input->post('submit_EditSpec') && $this->form_validation->run('SpecValidation')) {
             $this->BeginTransaction();
 
             $specData = array(
@@ -97,24 +109,29 @@ class SpecController extends MY_Controller {
             );
             $this->spec_model->updateSpec(array('SpecID' => $SpecID), $specData);
 
-            // Update Target Product Information
+// Update Target Product Information
             $targetProduct = ($this->input->post('targetProduct') != NULL) ? $this->input->post('targetProduct') : array();
             $this->UpdateTargetInfo('Spec', $SpecID, 'Product', $targetProduct);
 
-            // Update Target OS Infomation
+// Update Target OS Infomation
             $targetOS = ($this->input->post('targetOS') != NULL) ? $this->input->post('targetOS') : array();
             $this->UpdateTargetInfo('Spec', $SpecID, 'OS', $targetOS);
 
-            // Update Target PDL Information
+// Update Target PDL Information
             $targetPDL = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
             $this->UpdateTargetInfo('Spec', $SpecID, 'PDL', $targetPDL);
+
+// Update Target Lang Information
+            $targetLang = ($this->input->post('targetLang') != NULL) ? $this->input->post('targetLang') : array();
+            $this->UpdateTargetInfo('Spec', $SpecID, 'Lang', $targetLang);
 
             $this->EndTransaction();
             $this->ViewSpecDetail($SpecID);
         } else {
+            $caseID = $this->GetCaseIDBySpecID($SpecID);
             $specObj = $this->spec_model->getSpec(array('SpecID' => $SpecID));
-            $caseObj = $this->case_model->getCase(array('CaseID' => $specObj->CaseID));
-            $reqObj = $this->requirement_model->getRequirement(array('CaseID' => $specObj->CaseID));
+            $caseObj = $this->case_model->getCase(array('CaseID' => $caseID));
+            $reqObj = $this->requirement_model->getRequirement(array('CaseID' => $caseID));
 
             $result['specObj'] = $specObj;
             $result['reqObj'] = $reqObj;
@@ -122,17 +139,21 @@ class SpecController extends MY_Controller {
             $result['allProductNames'] = $this->product_model->getAllProductNameArray();
             $result['supportedProductIDs'] = $this->product_model->getSupportedProductIDArray('Spec', array('SpecID' => $SpecID));
             $result['productCount'] = count($result['supportedProductIDs']);
-            $result['caseBasicView'] = $this->load->view('case/view_case_basic', $result, TRUE);
+            $result['caseBasicView'] = $this->GetCaseBasicView($caseObj->CaseID);
+            $result['caseInfoView'] = $this->GetCaseInfoView($caseObj->CaseID);
+            $result['reqInfoView'] = $this->GetRequirementInfoView($caseID);
             $result['selectOS'] = $this->GetOSSelectionView('Spec', $specObj->SpecID, $isEdit = TRUE);
             $result['selectPDL'] = $this->GetPDLSelectionView('Spec', $specObj->SpecID, $isEdit = TRUE);
-            $this->load->view('case/spec/view_spec_edit', $result);
+            $result['selectLang'] = $this->GetLangSelectionView('Spec', $specObj->SpecID, $isEdit = TRUE);
+            $result['progress'] = $this->GetProgressView('Spec', $caseObj->CaseID, $SpecID);
+            $this->load->view('spec/view_spec_edit', $result);
         }
     }
 
     public function ViewAgreeDoc($SpecID) {
         $specObj = $this->spec_model->getSpec(array('SpecID' => $SpecID));
-        $caseObj = $this->case_model->getCase(array('CaseID' => $specObj->CaseID));
-        $reqObj = $this->requirement_model->getRequirement(array('CaseID' => $specObj->CaseID));
+        $caseObj = $this->case_model->getCase(array('CaseID' => $this->GetCaseIDBySpecID($SpecID)));
+        $reqObj = $this->requirement_model->getRequirement(array('RequirementID' => $specObj->RequirementID));
 
         $result['specObj'] = $specObj;
         $result['reqObj'] = $reqObj;
@@ -140,128 +161,136 @@ class SpecController extends MY_Controller {
 
         $result['title'] = $this->case_model->getCaseTypeLabel($caseObj->CaseTypeID) . $caseObj->CaseNo . ':' . $caseObj->CaseTitle;
         $this->load->view('document/agree_doc', $result, FALSE);
-        //$view = $this->load->view('document/agree_doc', NULL, TRUE);
-        //file_put_contents("hoge.html", $view); // 個別対応確認書のViewをファイルに保存する
+//$view = $this->load->view('document/agree_doc', NULL, TRUE);
+//file_put_contents("hoge.html", $view); // 個別対応確認書のViewをファイルに保存する
     }
 
-    public function UploadFile() {
-        $ini = parse_ini_file(APPPATH . '/config/config.ini');
-        $path = $ini['uploadPath'];
-        if (!is_dir($path)) {
-            mkdir($path, 0777, TRUE);
-        }
-        $outputPath = getcwd() . "/application/pdf/";
-        if (!is_dir($outputPath)) {
-            mkdir($outputPath, 0777, TRUE);
-        }
-        $config = array(
-            'upload_path' => $path,
-            //'file_name' => 'hoge.jpg',
-            'allowed_types' => '*',
-            'remove_spaces' => TRUE,
-            'encrypt_name' => FALSE,
-        );
-        $this->upload->initialize($config);
-        if (!$this->upload->do_upload('file')) {
-            $result['error'] = $this->upload->display_errors();
-            return null;
-        } else {
-            $file_info = $this->upload->data();
-            $data = array(
-                'FileName' => $file_info['file_name'],
-                'FilePath' => $file_info['file_path'],
-                'ViewName' => $file_info['raw_name'],
-                'OriginalName' => $file_info['client_name']
-            );
-        }
+    public function PreviewAgreeDoc($SpecID) {
+        $specObj = $this->spec_model->getSpec(array('SpecID' => $SpecID));
+        $caseObj = $this->case_model->getCase(array('CaseID' => $this->GetCaseIDBySpecID($SpecID)));
+        $reqObj = $this->requirement_model->getRequirement(array('RequirementID' => $specObj->RequirementID));
 
-//        if ($convert) {
-//            $this->convertDocx2View($file_info, $category, $id);
-//        } else {
-//            $this->copyView($file_info, $category, $id);
-//        }
-        return $result;
+        $result['specObj'] = $specObj;
+        $result['reqObj'] = $reqObj;
+        $result['caseObj'] = $caseObj;
+
+        $result['title'] = $this->case_model->getCaseTypeLabel($caseObj->CaseTypeID) . $caseObj->CaseNo . ':' . $caseObj->CaseTitle;
+        $result['supportedOSName'] = $this->os_model->getSupportedOSNameArray('Spec', array('SpecID' => $SpecID));
+        $result['supportedLangName'] = $this->lang_model->getSupportedLangNameArray('Spec', array('SpecID' => $SpecID));
+        $this->load->view('document/agree_doc', $result, FALSE);
+//file_put_contents("hoge.html", $view); // 個別対応確認書のViewをファイルに保存する
     }
 
-    public function AddSpecDevelopment($specID, $productID) {
-        if ($this->input->post('submit_AddSpecDevelopment') != NULL) {
-            $this->BeginTransaction();
+    public function EditAgreeDoc($SpecID) {
+        if ($this->input->post('submitAgreeDoc')) {
+            $specObj = $this->spec_model->getSpec(array('SpecID' => $SpecID));
+            $caseObj = $this->case_model->getCase(array('CaseID' => $this->GetCaseIDBySpecID($SpecID)));
+            $reqObj = $this->requirement_model->getRequirement(array('RequirementID' => $specObj->RequirementID));
 
-            // Add New Development Data
-            $devData = array(
-                'SpecID' => $specID,
-                'ProductID' => $productID,
-                'DevDriverVersion' => $this->input->post('DevDriverVersion'),
-            );
-            $develomentID = $this->development_model->insertDevelopment($devData);
 
-            // Update Target PDL Information
-            $targetPDL = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
-            $this->UpdateTargetInfo('Development', $develomentID, 'PDL', $targetPDL);
 
-            $this->EndTransaction();
-            $this->ViewSpecDetail($specID);
-        } else {
-            $result['specObj'] = $this->spec_model->getSpec(array('SpecID' => $specID));
-            $result['prodObj'] = $this->product_model->getProduct(array('ProductID' => $productID));
-            $result['selectPDL'] = $this->GetPDLSelectionView('Spec', $specID, TRUE);
-            $this->load->view('development/table/view_development_table_add', $result);
-        }
-    }
-
-    public function EditSpecDevelopment($specID, $productID) {
-        if ($this->input->post('submit_EditSpecDevelopment') != NULL) {
-            $this->BeginTransaction();
+            $result['title'] = $this->case_model->getCaseTypeLabel($caseObj->CaseTypeID) . $caseObj->CaseNo . ':' . $caseObj->CaseTitle;
+            $result['supportedOSName'] = $this->os_model->getSupportedOSNameArray('Spec', array('SpecID' => $SpecID));
+            $result['supportedLangName'] = $this->lang_model->getSupportedLangNameArray('Spec', array('SpecID' => $SpecID));
             
-            $developmentID = $this->input->post('DevelopmentID');
+            $specObj->deliverType = $this->input->post('deliverType') ? $this->input->post('deliverType') : NULL;
+            $specObj->SpecCSW = ($this->input->post('SpecCSW') == TRUE) ? FALSE : TRUE;
+            $specObj->SpecDetail = $this->input->post('NewSpecDetail') ? $this->input->post('NewSpecDetail') : '';
+            $specObj->PlugandPlayInstall = $this->input->post('PlugandPlayInstall') ? '○' : '';
+            $specObj->SupportVersionUp = $this->input->post('SupportVersionUp') ? '○' : '';
+            $specObj->SupportKyouzon = $this->input->post('SupportKyouzon') ? '○' : '';
+            $specObj->SupportExclusive = $this->input->post('SupportExclusive') ? '○' : '';
+            $specObj->HasDifference = $this->input->post('HasDifference') ? '○' : '';
+            $specObj->SupportNewFuncHelp = $this->input->post('SupportNewFuncHelp') ? '○' : '';
+            $specObj->NewLimitation1 = $this->input->post('NewLimitation1') ? $this->input->post('NewLimitation1') : NULL;
             
-            $devData = array(
-                'DevDriverVersion' => $this->input->post('DevDriverVersion'),
-            );
-
-            $this->development_model->updateDevelopment(array('DevelopmentID' => $developmentID), $devData);
-            
-            // Update Target PDL Information
-            $targetPDL = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
-            $this->UpdateTargetInfo('Development', $developmentID, 'PDL', $targetPDL);
-            $this->EndTransaction();
-            $this->ViewSpecDetail($specID);
-        } else {
-            $specObj = $this->spec_model->getSpec(array('SpecID' => $specID));
-            $prodObj = $this->product_model->getProduct(array('ProductID' => $productID));
-            $devObj = $this->development_model->getDevelopment(array('SpecID' => $specID, 'ProductID' => $productID));
-
             $result['specObj'] = $specObj;
-            $result['prodObj'] = $prodObj;
-            if ($devObj) {
-                $result['devObj'] = $devObj;
-                $result['selectPDL'] = $this->GetPDLSelectionView('Development', $devObj->DevelopmentID, TRUE);
-                $this->load->view('development/table/view_development_table_edit', $result);
-            } else {
-                redirect("SpecController/AddSpecDevelopment/$specID/$productID");
-            }
+            $result['reqObj'] = $reqObj;
+            $result['caseObj'] = $caseObj;
+            $this->load->view('document/agree_doc', $result, FALSE);
+        } else {
+            $specObj = $this->spec_model->getSpec(array('SpecID' => $SpecID));
+            $caseObj = $this->case_model->getCase(array('CaseID' => $this->GetCaseIDBySpecID($SpecID)));
+            $reqObj = $this->requirement_model->getRequirement(array('RequirementID' => $specObj->RequirementID));
+            $result['specObj'] = $specObj;
+            $result['reqObj'] = $reqObj;
+            $result['caseObj'] = $caseObj;
+
+            $result['title'] = $this->case_model->getCaseTypeLabel($caseObj->CaseTypeID) . $caseObj->CaseNo . ':' . $caseObj->CaseTitle;
+            $result['supportedOSName'] = $this->os_model->getSupportedOSNameArray('Spec', array('SpecID' => $SpecID));
+            $result['supportedLangName'] = $this->lang_model->getSupportedLangNameArray('Spec', array('SpecID' => $SpecID));
+            $this->load->view('document/agree_doc_edit', $result, FALSE);
         }
     }
 
-    private function getSpecDevlopmentView($specObj, $isEdit = NULL) {
-        $specID = $specObj->SpecID;
-        $view = '';
-        $supportedProductIDs = $this->product_model->getSupportedProductIDArray('Spec', array('SpecID' => $specID));
-        foreach ($supportedProductIDs as $productID) {
-            $result['prodObj'] = $this->product_model->getProduct(array('ProductID' => $productID));
-            $result['productCount'] = count($supportedProductIDs);
-            $devObj = $this->development_model->getDevelopment(array('SpecID' => $specID, 'ProductID' => $productID));
-            if ($devObj) {
-                $result['selectOS'] = $this->GetOSSelectionView('Development', $devObj->DevelopmentID, FALSE);
-                $result['selectPDL'] = $this->GetPDLSelectionView('Development', $devObj->DevelopmentID, FALSE);
-                $result['devObj'] = $devObj;
-            } else {
-                $result['selectOS'] = $this->GetOSSelectionView('Spec', $specID, $isEdit);
-                $result['selectPDL'] = $this->GetPDLSelectionView('Spec', $specID, $isEdit);
-            }
-            $view .= $this->load->view('development/table/view_development_table', $result, TRUE);
-        }
-        return $view;
+    public function UploadAgreeDoc($SpecID) {
+        parent::UploadFile('AgreeDoc', $SpecID);
+    }
+
+//    public function AddSpecDevelopment($specID, $productID) {
+//        if ($this->input->post('submit_AddSpecDevelopment') != NULL) {
+//            $this->BeginTransaction();
+//
+//            // Add New Development Data
+//            $devData = array(
+//                'SpecID' => $specID,
+//                'ProductID' => $productID,
+//                'DevDriverVersion' => $this->input->post('DevDriverVersion'),
+//            );
+//            $develomentID = $this->development_model->insertDevelopment($devData);
+//
+//            // Update Target PDL Information
+//            $targetPDL = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
+//            $this->UpdateTargetInfo('Development', $develomentID, 'PDL', $targetPDL);
+//
+//            $this->EndTransaction();
+//            $this->ViewSpecDetail($specID);
+//        } else {
+//            $result['specObj'] = $this->spec_model->getSpec(array('SpecID' => $specID));
+//            $result['prodObj'] = $this->product_model->getProduct(array('ProductID' => $productID));
+//            $result['selectPDL'] = $this->GetPDLSelectionView('Spec', $specID, TRUE);
+//            $this->load->view('development/table/view_development_table_add', $result);
+//        }
+//    }
+//    public function EditSpecDevelopment($specID, $productID) {
+//        if ($this->input->post('submit_EditSpecDevelopment') != NULL) {
+//            $this->BeginTransaction();
+//
+//            $developmentID = $this->input->post('DevelopmentID');
+//
+//            $devData = array(
+//                'DevDriverVersion' => $this->input->post('DevDriverVersion'),
+//            );
+//
+//            $this->development_model->updateDevelopment(array('DevelopmentID' => $developmentID), $devData);
+//
+//            // Update Target PDL Information
+//            $targetPDL = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
+//            $this->UpdateTargetInfo('Development', $developmentID, 'PDL', $targetPDL);
+//            $this->EndTransaction();
+//            $this->ViewSpecDetail($specID);
+//        } else {
+//            $specObj = $this->spec_model->getSpec(array('SpecID' => $specID));
+//            $prodObj = $this->product_model->getProduct(array('ProductID' => $productID));
+//            $devObj = $this->development_model->getDevelopment(array('SpecID' => $specID));
+//
+//            $result['specObj'] = $specObj;
+//            $result['prodObj'] = $prodObj;
+//            if ($devObj) {
+//                $result['devObj'] = $devObj;
+//                $result['selectPDL'] = $this->GetPDLSelectionView('Development', $devObj->DevelopmentID, TRUE);
+//                $this->load->view('development/table/view_development_table_edit', $result);
+//            } else {
+//                redirect("SpecController/AddSpecDevelopment/$specID/$productID");
+//            }
+//        }
+//    }
+
+    private function getAgreeDocTableView($SpecID) {
+        $result['docs'] = $this->spec_model->getSpecAgreeDocs($SpecID);
+        $result['category'] = 'AgreeDoc';
+        $result['id'] = $SpecID;
+        return $this->load->view('document/document_list', $result, TRUE);
     }
 
 }

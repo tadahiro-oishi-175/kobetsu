@@ -66,5 +66,13 @@ class PDLModel extends MY_Model {
         }
         return $result;
     }
-
+    
+    public function getAllPDLNames() {
+        $result = array();
+        $objs = $this->getAllPDLs();
+        foreach($objs as $obj) {
+            $result += array($obj->PDLID => $obj->PDLName);
+        }
+        return $result;
+    }
 }

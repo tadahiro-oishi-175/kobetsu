@@ -37,4 +37,13 @@ class StatusModel extends MY_Model {
     public function deleteStatus($where) {
         return $this->DeleteRecord($this->my_table_name, $where);
     }
+    
+    public function getAllStatusNames() {
+        $result = array();
+        $objs = $this->getAllStatus();
+        foreach($objs as $obj) {
+            $result += array($obj->StatusID => $obj->StatusName);
+        }
+        return $result;
+    }
 }

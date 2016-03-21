@@ -31,12 +31,17 @@ class RequirementController extends MY_Controller {
         $result['supportedProducts'] = $this->GetProductSelectionView('Requirement', $RequirementID, $isEdit = FALSE);
         $result['selectOS'] = $this->GetOSSelectionView('Requirement', $RequirementID, $isEdit = FALSE);
         $result['selectPDL'] = $this->GetPDLSelectionView('Requirement', $RequirementID, $isEdit = FALSE);
+        $result['selectLang'] = $this->GetLangSelectionView('Requirement', $RequirementID, $isEdit = FALSE);
+        $result['progress'] = $this->GetProgressView('Requirement', $caseID, $RequirementID);
         $result['tags'] = $this->tag_model->getTagDataListHtml(array('CaseID' => $caseID));
-        $this->load->view('case/requirement/view_requirement', $result);
+        $result['caseBasicView'] = $this->GetCaseBasicView($caseID);
+        $result['caseInfoView'] = $this->GetCaseInfoView($caseID);
+        $result['docsView'] = $this->getHandOffDocTableView($RequirementID);
+        $this->load->view('requirement/view_requirement', $result);
     }
 
     public function AddNewRequirement($CaseID) {
-        if ($this->input->post('submit_AddNewRequirement') != NULL) {
+        if ($this->input->post('submit_AddNewRequirement') && $this->form_validation->run('RequirementValidation')) {
             $this->BeginTransaction();
 
             // Add Detail
@@ -50,18 +55,22 @@ class RequirementController extends MY_Controller {
             );
             $requirementID = $this->requirement_model->insertRequirement($requirementData);
 
-             // Update Target Product Information
+            // Update Target Product Information
             $targetProduct = ($this->input->post('targetProduct') != NULL) ? $this->input->post('targetProduct') : array();
             $this->UpdateTargetInfo('Requirement', $requirementID, 'Product', $targetProduct);
-            
+
             // Update Target OS Information
             $targetOS = ($this->input->post('targetOS') != NULL) ? $this->input->post('targetOS') : array();
             $this->UpdateTargetInfo('Requirement', $requirementID, 'OS', $targetOS);
 
             // Update Target PDL Information
-            $tagetPDLs = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
-            $this->UpdateTargetInfo('Requirement', $requirementID, 'PDL', $tagetPDLs);
-            
+            $targetPDLs = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
+            $this->UpdateTargetInfo('Requirement', $requirementID, 'PDL', $targetPDLs);
+
+            // Update Target Lang Information
+            $targetLangs = ($this->input->post('targetLang') != NULL) ? $this->input->post('targetLang') : array();
+            $this->UpdateTargetInfo('Requirement', $requirementID, 'Lang', $targetLangs);
+
             $this->EndTransaction();
             $this->ViewRequirementDetail($requirementID);
         } else {
@@ -69,13 +78,17 @@ class RequirementController extends MY_Controller {
             $result['caseObj'] = $this->case_model->getCase(array('CaseID' => $CaseID));
             $result['allProductNames'] = $this->product_model->getAllProductNameArray();
             $result['selectOS'] = $this->GetOSSelectionView();
+            $result['selectLang'] = $this->GetLangSelectionView();
             $result['selectPDL'] = $this->GetPDLSelectionView();
-            $this->load->view('case/requirement/view_requirement_add', $result);
+            $result['caseBasicView'] = $this->GetCaseBasicView($CaseID);
+            $result['caseInfoView'] = $this->GetCaseInfoView($CaseID);
+            $result['progress'] = $this->GetProgressView('Requirement', $CaseID, NULL);
+            $this->load->view('requirement/view_requirement_add', $result);
         }
     }
 
     public function EditRequirement($RequirementID) {
-        if ($this->input->post('submit_EditRequirement') != NULL) {
+        if ($this->input->post('submit_EditRequirement') && $this->form_validation->run('RequirementValidation')) {
             $this->BeginTransaction();
 
             $RequirementData = array(
@@ -90,7 +103,7 @@ class RequirementController extends MY_Controller {
             // Update Target Product Information
             $targetProduct = ($this->input->post('targetProduct') != NULL) ? $this->input->post('targetProduct') : array();
             $this->UpdateTargetInfo('Requirement', $RequirementID, 'Product', $targetProduct);
-            
+
             // Update Target OS Information
             $targetOS = ($this->input->post('targetOS') != NULL) ? $this->input->post('targetOS') : array();
             $this->UpdateTargetInfo('Requirement', $RequirementID, 'OS', $targetOS);
@@ -98,7 +111,11 @@ class RequirementController extends MY_Controller {
             // Update Target PDL Information
             $targetPDL = ($this->input->post('targetPDL') != NULL) ? $this->input->post('targetPDL') : array();
             $this->UpdateTargetInfo('Requirement', $RequirementID, 'PDL', $targetPDL);
-            
+
+            // Update Target Lang Information
+            $targetLang = ($this->input->post('targetLang') != NULL) ? $this->input->post('targetLang') : array();
+            $this->UpdateTargetInfo('Requirement', $RequirementID, 'Lang', $targetLang);
+
             $this->EndTransaction();
             $this->ViewRequirementDetail($RequirementID);
         } else {
@@ -107,11 +124,27 @@ class RequirementController extends MY_Controller {
             $result['allProductNames'] = $this->product_model->getAllProductNameArray();
             $result['supportedProductIDs'] = $this->product_model->getSupportedProductIDArray('Requirement', array('RequirementID' => $RequirementID));
             $result['selectOS'] = $this->GetOSSelectionView('Requirement', $RequirementID, $isEdit = TRUE);
+            $result['selectLang'] = $this->GetLangSelectionView('Requirement', $RequirementID, $isEdit = TRUE);
             $result['selectPDL'] = $this->GetPDLSelectionView('Requirement', $RequirementID, $isEdit = TRUE);
             $result['caseTypeNames'] = $this->case_model->getCaseTypeNames();
             $result['caseObj'] = $caseObj;
             $result['reqObj'] = $reqObj;
-            $this->load->view('case/requirement/view_requirement_edit', $result);
+            $result['caseBasicView'] = $this->GetCaseBasicView($caseObj->CaseID);
+            $result['caseInfoView'] = $this->GetCaseInfoView($caseObj->CaseID);
+            $result['progress'] = $this->GetProgressView('Requirement', $caseObj->CaseID, $RequirementID);
+            $this->load->view('requirement/view_requirement_edit', $result);
         }
     }
+
+    public function UploadHandOffDoc($RequirementID) {
+        parent::UploadFile('HandOffDoc', $RequirementID);
+    }
+
+    private function getHandOffDocTableView($RequirementID) {
+        $result['docs'] = $this->requirement_model->getRequirementHandOffDocuments($RequirementID);
+        $result['category'] = 'HandOffDoc';
+        $result['id'] = $RequirementID;
+        return $this->load->view('document/document_list', $result, TRUE);
+    }
+
 }

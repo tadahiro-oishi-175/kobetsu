@@ -5,7 +5,7 @@ html, body {
 }
 
 #tags {
-    border: none;
+    border: 1px solid #CCCCCC;
 }
 
 #contents {
@@ -63,18 +63,74 @@ div#menu a:hover{
 div#main {
     //border: 1px solid black;
     padding-top: 15px;
-    padding-left: 35px; 
+    padding-left: 30px; 
     padding-bottom: 30px;
-    background: #FFFFFF;	
+    padding-right: 10px;
+    background: #FFFFFF;
     float: left;
-    font-size: 100%;
-    //width: 1000px;
+    //font-size: 100%;
+    width: 80%;
+}
+
+div#submain {
+    float: left;
+    width: 70%;
+}
+
+div#DropZone {
+    float: left;
+    width: 25%;
+    margin-left: 35px;
+    margin-right: 10px;
+}
+
+div#DocDropzone {
+    margin-bottom: 20px;
+}
+
+div#DocList table, tr{
+    font-size: 12px;
+    width: 100%;
+    border: #000000 1px solid;
+    border-collapse: collapse;
+}
+
+div#DocList tr:nth-child(odd){
+    background: #E4FFE9;
+}
+
+div#DocList th{
+    text-align: center;
+    background: #9cc;
+}
+
+div#DocList th, td{
+    padding-left: 5px;
+    border: gray 1px solid;
+    border-collapse: collapse;
+}
+
+div#DocList .delLink {
+    padding: 1px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+div#DocList .delLink a{
+    text-decoration: none;
 }
 
 div#submenu {
     width: 15%;
     float: left;
     background: #E4FFE9;
+    border:1px solid #D1D1D1;    
+}
+
+div#kensakumenu {
+    width: 100%;
+    float: left;
+    background: #EEE;
     border:1px solid #D1D1D1;    
 }
 
@@ -137,20 +193,179 @@ div#foot p{
     height: 10%;
 }
 
-div#case {
-    height: 80px;
-    border: 1px solid #000000;
-    background-color: lightgoldenrodyellow;
-    width: auto;
-    margin-left: 10px;
-    margin-bottom: 10px;
+div#quickfilter {
+    background: #E8F5FF;
+    width: 60%;
 }
 
-div#case li{
-     float:left;
-     list-style: none;
-     margin-left: 5px;
-     margin-right: 5px;
+div#quickfilter span{
+    color: white;
+    padding: 2px;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-weight: bold;
+    background: #245386;
+    text-align: center;
+}
+
+input#searchbox {
+    width:60%;
+    margin:5px;
+}
+
+div#searchmenubox {
+    width: 100%;
+}
+
+div#searchmenubox1 {
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #245386;
+    height: 13%;
+    width:60%;
+}
+
+div#searchmenubox2 {
+    float: right;
+    margin-right: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #245386;
+    height: 13%;
+    width:35%;
+}
+
+div#searchmenubox1 > div, div#searchmenubox2 > div{
+    font-weight: bold;
+    padding-top: 5px;
+    padding-left: 5px;
+    color: #245386;
+    background: #E8F5FF;
+    border-bottom: 1px dotted #245386;
+    //width: 9% !important;
+}
+
+div#searchmenubox1 table, div#searchmenubox2 table {
+    margin: 5px;
+    border-collapse: separate;
+}
+
+div#searchmenubox1 table tr,th,td {
+    border: none;
+}
+
+div#searchmenubox1 table td, div#searchmenubox2 table td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+div#searchmenubox1 table th, div#searchmenubox2 table th {
+    text-align: right;
+    padding-left: 0px;
+}
+
+div#searchmenubox1 select {
+    width: 150px;
+}
+
+div#searchmenubox2 select {
+    width: 80px;
+}
+
+div#searchmenubox2 input[type="text"] {
+    width: 80px;
+    margin-right: 20px;
+}
+
+div#searchmenubox1 table th, td {
+    min-width: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+div#searchmenubox2 table th, td {
+    min-width: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+ul#caseList{
+    margin-left: -40px !important;
+}
+
+ul#caseList li.dataRow{
+    margin-bottom: 30px;
+    list-style: none;
+}
+
+ul#caseList li.titleRow{
+    margin-bottom: 10px;
+    list-style: none;
+}
+
+table#caseTable {
+    border-collapse: collapse;
+}
+
+table#caseTable tr.caseTitleRow td, tr.caseDataRow td{
+    border: 1px solid black !important;
+    padding: 3px;
+}
+
+table#caseTable tr.caseDataRow td#caseTitleCell {
+    background: #E8F5FF;
+    border-right: none !important;
+}
+
+table#caseTable tr.caseDataRow td#customerNameCell {
+    background: #E8F5FF;
+    border-left: none !important;
+    border-right: none !important;
+}
+
+table#caseTable tr.caseDataRow td#caseRankCell {
+    background: #E8F5FF;
+    border-left: none !important;
+}
+
+table#caseTable tr.caseTitleRow{
+    font-weight: bold;
+    text-align: center;
+    background: #E4FFE9;
+}
+
+table#caseTable td {
+    min-width: 100px;
+}
+
+table#caseTable td#csw, table#caseTable td#sut {
+    min-width: 70px;
+}
+
+table#caseTable td#regdate, td#findate {
+    min-width: 120px;
+}
+
+table#caseTable tr.caseTagRow ul{
+    margin-left: 0px;
+    padding-left: 5px;
+}
+
+table#caseTable tr.caseTagRow ul li{
+    float: left;
+    margin-right: 10px;
+}
+
+table#caseTable tr.caseTagRow ul li span{
+    color: white;
+    font-family: "Comic Sans MS";
+    background: #245386;
+    padding: 2px;
+}
+
+div.DoneInfo table {
+    margin-bottom: 20px;
 }
 
 strong {
@@ -186,93 +401,6 @@ dd {
     margin-top: 5px;
 }
 
-.ClickableTable, .ReadableTable {
-    border-spacing: 0;
-    font-size: 13px;
-}
-
-.ClickableTable th, .ReadableTable th {
-    color: #fff;
-    padding: 8px 15px;
-    background: #258;
-    background: -moz-linear-gradient(rgba(34,85,136,0.7), rgba(34,85,136,0.9) 50%);
-    background: -webkit-gradient(linear, 100%, 0%, 100% 50%, from(rgba(34,85,136,0.7)), to(rgba(34,85,136,0.9)));
-    font-weight: bold;
-    border-left: 1px solid #258;
-    border-top: 1px solid #258;
-    border-bottom: 1px solid #258;
-    line-height: 120%;
-    text-align: center;
-    font-size: 14px;
-    text-shadow: 0 -1px 0 rgba(34,85,136,0.9);
-    box-shadow: 0px 1px 1px rgba(255,255,255,0.3) inset;
-}
-
-.ClickableTable th:first-child, .ReadableTable th:first-child {
-    border-radius: 5px 0 0 0;
-}
-
-.ClickableTable th:last-child, .ReadableTable th:last-child {
-    border-radius: 0 5px 0 0;
-    border-right: 1px solid #258;
-    box-shadow: 2px 2px 1px rgba(0,0,0,0.1), 0px 1px 1px rgba(255,255,255,0.3) inset;
-}
-
-.ClickableTable tr td, .ReadableTable tr td {
-    cursor: pointer;
-    padding: 8px 15px;
-    border-bottom: 1px solid #84b2e0;
-    border-left: 1px solid #84b2e0;
-    text-align: center;
-}
-
-.ClickableTable tr td:last-child, .ReadableTable tr td:last-child {
-    border-right: 1px solid #84b2e0;
-    box-shadow: 2px 0px 1px rgba(0,0,0,0.1), 0px 1px 1px rgba(255,255,255,0.3) inset;
-}
-
-.ClickableTable tr, .ReadableTable tr {
-    background: #fff;
-}
-
-.ClickableTable tr:nth-child(2n+1), .ReadableTable tr:nth-child(2n+1){
-    background: #f1f6fc;
-}
-
-.ClickableTable tr:last-child td, .ReadableTable tr:last-child td {
-    box-shadow: 0px 2px 1px rgba(0,0,0,0.1);
-}
-
-.ClickableTable tr:last-child td:first-child, .ReadableTable tr:last-child td:first-child {
-    border-radius: 0 0 0 5px;
-}
-
-.ClickableTable tr:last-child td:last-child, .ReadableTable tr:last-child td:last-child {
-    border-radius: 0 0 5px 0;
-}
-
-.ClickableTable tr td a, .ReadableTable tr td a{
-    display: block;
-    width: 100%;
-    text-decoration: none;
-}
-
-.ClickableTable tr:hover{
-    background: #bbd4ee;
-}
-
-.ReadableTable tr td {
-    cursor: default !important;
-}
-
-.ReadableTable:hover {
-    background: inherit !important;
-}
-
-.ReadableTable tr .InputTermCell {
-    padding: 3px !important;
-}
-
 legend {
     margin:5px;
 }
@@ -305,6 +433,28 @@ input[type="submit"] {
     text-align: left;
 }
 
+.InputTag {
+    margin: 3px !important;
+    padding: 3px !important;
+}
+
+.inputTextShort {
+    width: 15% !important;
+}
+
+.class-holiday > .ui-state-default {
+    background: #FFFFCC !important;
+    color: red !important;
+}
+.class-sunday > .ui-state-default {
+    background: #FFCCCC !important;
+    color: red !important;
+}
+.class-saturday > .ui-state-default {
+    background: #CCCCFF !important;
+    color: blue !important;
+}
+
 textarea {
     padding: 2px;
     width: 95%;
@@ -312,24 +462,36 @@ textarea {
 }
 
 .InputForm {
+    text-align: left;
+    font-size: 12px;
     border-top: 1px grey solid;
     border-right: 1px grey solid;
     border-bottom: 1px grey solid;
     border-left: 5px solid #0073ea;
     border-collapse: collapse;
-    width: 800px;
+    margin-right: 30px;
+    background: #FFFFFF;
+    width: 100%;
 }
 
 .InputForm th {
     padding-left: 10px;
     padding-top: 2px;
     padding-bottom: 2px;
-    width: 200px;
+    width: 25%;
     font-weight: normal !important;
     background: #E8F5FF;
     border-right: 1px grey solid;
     border-top: 1px grey solid;
     border-bottom: 1px grey solid;
+}
+
+.InputForm .requiredItem:after{
+    float: right;
+    color: red;
+    content: '(※必須)';
+    padding-right: 10px;
+    font-size: 11px;
 }
 
 .InputForm td {
@@ -339,4 +501,130 @@ textarea {
     padding-left: 7px;
     border-top:1px grey solid;
     border-bottom:1px grey solid;
+}
+
+.track-progress[data-steps="3"] li { width: 20%; }
+.track-progress[data-steps="4"] li { width: 18%; }
+.track-progress[data-steps="5"] li { width: 15%; }
+.track-progress[data-steps="6"] li { width: 15%; }
+
+.track-progress {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    padding-left: 25px;
+}
+
+.track-progress li > span {
+    display: block;
+
+    color: #999;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.track-progress li.done > span {
+    color: #666;
+    background-color: #ccc;
+}
+
+.track-progress li.current > span {
+    color: #666;
+    background-color: pink;
+}
+
+.track-progress li.next > span {
+    color: #666;
+}
+
+.track-progress li {
+    list-style-type: none;
+    display: inline-block;
+
+    position: relative;
+    margin: 0;
+    padding: 0;
+
+    text-align: center;
+    line-height: 30px;
+    height: 30px;
+
+    background-color: #f0f0f0;
+}
+.track-progress li > span:after,
+.track-progress li > span:before {
+    content: "";
+    display: block;
+    width: 0px;
+    height: 0px;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    border: solid transparent;
+    border-left-color: #f0f0f0;
+    border-width: 15px;
+}
+
+.track-progress li > span:after {
+    top: -5px;
+    z-index: 1;
+    border-left-color: white;
+    border-width: 20px;
+}
+
+.track-progress li > span:before {
+    z-index: 2;
+}
+.track-progress li.done + li > span:before {
+    border-left-color: #ccc;
+}
+.track-progress li.current + li > span:before {
+    border-left-color: pink;
+}
+
+.track-progress li:first-child > span:after,
+.track-progress li:first-child > span:before {
+    display: none;
+}
+.track-progress li:first-child i,
+.track-progress li:last-child i {
+    display: block;
+    height: 0;
+    width: 0;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    border: solid transparent;
+    border-left-color: white;
+    border-width: 15px;
+}
+
+.track-progress li:last-child i {
+    left: auto;
+    right: -15px;
+
+    border-left-color: transparent;
+    border-top-color: white;
+    border-bottom-color: white;
+}
+
+.ms-container{
+    background: transparent url("../application/img/switch.png") no-repeat 50% 50%;
+}
+
+.class-holiday > .ui-state-default {
+  background: #FFFFCC !important;
+  color: red !important;
+}
+.class-sunday > .ui-state-default {
+  background: #FFCCCC !important;
+  color: red !important;
+}
+.class-saturday > .ui-state-default {
+  background: #CCCCFF !important;
+  color: blue !important;
 }

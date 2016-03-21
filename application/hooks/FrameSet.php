@@ -12,19 +12,20 @@
  * @author Oishi-Tadahiro
  */
 class FrameSet {
-    
+
     function __construct() {
-        $this->ci =& get_instance();
+        $this->ci = & get_instance();
     }
-    
+
     public function beforeFilter() {
-        $ci =& get_instance();
-        $ci->load->view('frame');        
+
+        //$result['tags'] = $this->ci->tag_model->getTagDataListHtml();
+        $result['search_menu'] = $this->ci->load->view('search_menu', NULL, TRUE);
+        $this->ci->load->view('frame', $result);
     }
-    
+
     public function afterFilter() {
-        $ci =& get_instance();
-        $ci->load->view('footer');
+        $this->ci->load->view('footer');
     }
-    //put your code here
+
 }

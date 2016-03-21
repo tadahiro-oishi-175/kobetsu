@@ -35,7 +35,11 @@ class HandOffDocModel extends MY_Model {
     }
 
     public function deleteHandOffDoc($where) {
-        return $this->DeleteRecord($this->my_table_name, $where);
+        $obj = $this->db->get_where($this->my_table_name, $where)->row();
+        $result = unlink($obj->HandOffDocPath);
+        if($result) {
+            $this->DeleteRecord($this->my_table_name, $where);
+        }
     }
 
 }

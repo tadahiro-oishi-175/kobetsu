@@ -33,7 +33,7 @@ class DevelopmentModel extends MY_Model {
     public function deleteDevelopment($where) {
         $this->DeleteRecord($this->table_development_os, $where);
         $this->DeleteRecord($this->table_development_pdl, $where);
-        $this->DeleteRecord($this->table_development_lang, $where);
+        //$this->DeleteRecord($this->table_development_lang, $where);
         return $this->DeleteRecord($this->my_table_name, $where);
     }
 

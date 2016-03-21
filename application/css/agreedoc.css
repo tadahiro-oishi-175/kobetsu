@@ -1,21 +1,54 @@
-html {
+div#contents {
+    border: none;
+}
+
+article#printContent {
+    margin-top: 20px;
+    margin-bottom: 20px;
     font-family: "メイリオ", sans-serif;
     font-size: 13px;
-    width: 214mm;
-    counter-reset: section;
-    //border: 1px solid red;
+    width: 210mm;
+    border: 1px solid black;
 }
 
-body {
-    padding: 20px;
-    //border: solid 1px black;
-    //margin: 4mm;
-    counter-reset: page 1;
-    page: main;
+@media print{
+    article {
+        border: none;
+    }
+    .notPrint {
+        display: none;
+    }
 }
 
-@page main {
-    content: counter(page);
+div#documentContent {
+    margin: 10mm;
+}
+
+div#documentContent ol {
+    padding-left: 20px;
+}
+
+div#documentContent table {
+    border-collapse: collapse;
+    //border: 1px solid black;
+}
+
+div#documentContent table th{
+    min-width: 15px;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    font-size: 12px;
+    padding: 2px;
+}
+
+div#documentContent table td{
+    word-wrap: normal;
+    font-size: 12px;
+    padding: 2px;
+}
+
+div#signature {
+    page-break-before: always;
 }
 
 div#head {
@@ -26,7 +59,7 @@ div#menu {
     display: none;
 }
 
-div#main {
+/*div#main {
     //border: 1px solid black;
     padding-top: 15px;
     padding-left: 35px; 
@@ -35,7 +68,7 @@ div#main {
     float: left;
     font-size: 100%;
     //width: 1000px;
-}
+}*/
 
 div#submenu {
     display: none;
@@ -59,4 +92,9 @@ h1 {
 
 h2 {
     text-align: center;
+}
+
+
+blockquote {
+    margin-left: 10px;
 }

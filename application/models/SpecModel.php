@@ -31,8 +31,20 @@ class SpecModel extends MY_Model {
     }
 
     public function deleteSpec($where) {
+        $devObjs = $this->development_model->getDevelopment($where);
+        if (is_array($devObjs)) {
+            foreach ($devObjs as $devObj) {
+                $this->development_model->deleteDevelopment(array('DevelopmentID' => $devObj->DevelopmentID));
+            }
+        } else {
+            $devObj = $devObjs;
+            $this->development_model->deleteDevelopment(array('DevelopmentID' => $devObj->DevelopmentID));
+        }
+
+        $this->DeleteRecord($this->table_spec_pdl, $where);
         $this->DeleteRecord($this->table_spec_os, $where);
         $this->DeleteRecord($this->table_spec_product, $where);
+        $this->DeleteRecord($this->table_spec_lang, $where);
         return $this->DeleteRecord($this->my_table_name, $where);
     }
 
@@ -50,6 +62,10 @@ class SpecModel extends MY_Model {
                 $table = $this->table_spec_pdl;
                 $column = 'PDLID';
                 break;
+            case 'Lang':
+                $table = $this->table_spec_lang;
+                $column = 'LangID';
+                break;
             default:
                 break;
         }
@@ -63,20 +79,42 @@ class SpecModel extends MY_Model {
         }
     }
 
-//    public function updateTargetInfo($specID, $target, $valueArray) {
-//        switch ($target) {
-//            case 'OS':
-//                $this->DeleteRecord($this->table_spec_os, array('SpecID' => $specID));
-//                foreach ($valueArray as $value) {
-//                    $data = array(
-//                        'SpecID' => $specID,
-//                        'OSID' => $value,
-//                    );
-//                    $this->InsertRecord($this->table_spec_os, $data);
-//                }
-//                break;
-//            default:
-//                break;
-//        }
-//    }
+    public function addSpecAgreeDoc($data) {
+        return $this->InsertRecord($this->table_spec_agreedoc, $data);
+    }
+
+    public function updateSpecAgreeDoc($where, $data) {
+        $this->UpdateRecord($this->table_spec_agreedoc, $where, $data);
+    }
+    
+    public function delSpecAgreeDoc($where) {
+        $this->DeleteRecord($this->table_spec_agreedoc, $where);
+    }
+
+    public function getSpecAgreeDocs($SpecID) {
+        $this->db->order_by('SequenceNo');
+        $objs = $this->db->get_where($this->table_spec_agreedoc, array('SpecID' => $SpecID))->result();
+        foreach ($objs as $obj) {
+            $agreedocObj = $this->agreedoc_model->getAgreeDoc(array('AgreeDocID' => $obj->AgreeDocID));
+            $obj->DocID = $obj->AgreeDocID;
+            $obj->DocName = $agreedocObj->AgreeDocName;
+        }
+        return $objs;
+    }
+
+    public function getMaxSequenceNo($where) {
+        $this->db->select_max('SequenceNo');
+        return $this->db->get_where($this->table_spec_agreedoc, $where)->row()->SequenceNo;
+    }
+
+    public function getSpecAgreeDocArray($where) {
+        $result = array();
+        $this->db->order_by('AgreeDocID');
+        $objs = $this->db->get_where($this->table_spec_agreedoc, $where)->result();
+        foreach ($objs as $obj) {
+            $result += array($obj->AgreeDocID => $obj->SequenceNo);
+        }
+        return $result;
+    }
+
 }

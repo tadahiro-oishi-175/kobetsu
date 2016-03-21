@@ -37,4 +37,62 @@ class LangModel extends MY_Model {
     public function deleteLang($where) {
         return $this->DeleteRecord($this->my_table_name, $where);
     }
+
+    public function getSupportedLangIDArray($category, $where) {
+        switch ($category) {
+            case 'Requirement':
+                $table = $this->table_requirement_lang;
+                break;
+            case 'Spec':
+                $table = $this->table_spec_lang;
+                break;
+            case 'Development':
+                $table = $this->table_development_lang;
+                break;
+            default:
+                $table = '';
+                break;
+        }
+        $this->db->select('LangID');
+        $result = array();
+        $objs = $this->GetRecord($table, $where);
+
+        if (is_array($objs)) {
+            foreach ($objs as $obj) {
+                array_push($result, $obj->LangID);
+            }
+        } else {
+            array_push($result, $objs->LangID);
+        }
+        return $result;
+    }
+
+    public function getSupportedLangNameArray($category, $where) {
+        switch ($category) {
+            case 'Requirement':
+                $table = $this->table_requirement_lang;
+                break;
+            case 'Spec':
+                $table = $this->table_spec_lang;
+                break;
+            case 'Development':
+                $table = $this->table_development_lang;
+                break;
+            default:
+                $table = '';
+                break;
+        }
+        $result = array();
+        $this->db->join($this->table_lang_master, $table.'.LangID='.$this->table_lang_master.'.LangID');
+        $objs = $this->db->get_where($table, $where)->result();
+
+        if (is_array($objs)) {
+            foreach ($objs as $obj) {
+                array_push($result, $obj->LangName);
+            }
+        } else {
+            array_push($result, $objs->LangName);
+        }
+        return $result;
+    }
 }

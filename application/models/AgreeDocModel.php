@@ -35,7 +35,10 @@ class AgreeDocModel extends MY_Model {
     }
 
     public function deleteAgreeDoc($where) {
-        return $this->DeleteRecord($this->my_table_name, $where);
+        $obj = $this->db->get_where($this->my_table_name, $where)->row();
+        $result = unlink($obj->AgreeDocPath);
+        if($result) {
+            $this->DeleteRecord($this->my_table_name, $where);
+        }
     }
-
 }

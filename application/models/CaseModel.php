@@ -33,11 +33,36 @@ class CaseModel extends MY_Model {
     public function updateCase($where, $data) {
         return $this->UpdateRecord($this->my_table_name, $where, $data);
     }
+    
+    public function getMaxSequenceNo($where) {
+        $this->db->select_max('SequenceNo');
+        return $this->db->get_where($this->table_case_attached, $where)->row()->SequenceNo;
+    }
+
+    public function getCaseAttached($where) {
+        $result = array();
+        $this->db->order_by('AttachedID');
+        $objs = $this->db->get_where($this->table_case_attached, $where)->result();
+        foreach($objs as $obj) {
+            $result += array($obj->AttachedID => $obj->SequenceNo);
+        }
+        return $result;
+    }
+    
+    public function addCaseAttached($data) {
+        return $this->InsertRecord($this->table_case_attached, $data);
+    }
+    
+    public function updateCaseAttached($where, $data) {
+        $this->UpdateRecord($this->table_case_attached, $where, $data);
+    }
+    
+    public function delCaseAttached($where) {
+        $this->DeleteRecord($this->table_case_attached, $where);
+    }
 
     public function deleteCase($where) {
-        $this->DeleteRecord($this->table_case_agreedoc, $where);
-        $this->DeleteRecord($this->table_case_handoffdoc, $where);
-        $this->DeleteRecord($this->table_case_outputdoc, $where);
+        $this->DeleteRecord($this->table_case_attached, $where);
         $this->DeleteRecord($this->table_case_tag, $where);
         return $this->DeleteRecord($this->my_table_name, $where);
     }
@@ -66,6 +91,17 @@ class CaseModel extends MY_Model {
             default:
                 return '';
         }
+    }
+    
+    public function getCaseAttachedDocuments($CaseID) {
+        $this->db->order_by('SequenceNo');
+        $objs = $this->db->get_where($this->table_case_attached, array('CaseID' => $CaseID))->result();
+        foreach($objs as $obj) {
+            $attachedObj = $this->attached_model->getAttached(array('AttachedID' => $obj->AttachedID));
+            $obj->DocID = $obj->AttachedID;
+            $obj->DocName = $attachedObj->AttachedName;
+        }
+        return $objs;
     }
 
 }

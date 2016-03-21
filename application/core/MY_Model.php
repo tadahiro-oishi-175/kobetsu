@@ -40,27 +40,30 @@ class MY_Model extends CI_Model {
     protected $table_sw_master = 'sw_master';
     
     // case related tables
-    protected $table_case_agreedoc = 'case_agreedoc';
-    protected $table_case_handoffdoc = 'case_handoffdoc';
+    protected $table_case_attached = 'case_attached';
     protected $table_case_tag = 'case_tag';
     protected $table_case_outputdoc = 'case_outputdoc';
     
-    // requirement tables
+    // requirement tables    
     protected $table_requirement_pdl = 'requirement_pdl';
     protected $table_requirement_lang = 'requirement_lang';
     protected $table_requirement_os = 'requirement_os';
     protected $table_requirement_product = 'requirement_product';
     protected $table_requirement_sw = 'requirement_sw';
+    protected $table_requirement_handoff = 'requirement_handoff';
     
     // spec tables
-    protected $table_spec_os = 'spec_os';
     protected $table_spec_pdl = 'spec_pdl';
+    protected $table_spec_lang = 'spec_lang';
+    protected $table_spec_os = 'spec_os';
     protected $table_spec_product = 'spec_product';
+    protected $table_spec_agreedoc = 'spec_agreedoc';
     
     // development tables
     protected $table_development_pdl = 'development_pdl';
     protected $table_development_lang = 'development_lang';
     protected $table_development_os = 'development_os';
+    protected $table_development_product = 'development_product';
     
     // history tables
     protected $table_worker_history = 'worker_history';

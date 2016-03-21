@@ -35,6 +35,10 @@ class AttachedModel extends MY_Model {
     }
 
     public function deleteAttached($where) {
-        return $this->DeleteRecord($this->my_table_name, $where);
+        $obj = $this->db->get_where($this->my_table_name, $where)->row();
+        $result = unlink($obj->AttachedPath);
+        if($result) {
+            $this->DeleteRecord($this->my_table_name, $where);
+        }
     }
 }

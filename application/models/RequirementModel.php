@@ -40,7 +40,7 @@ class RequirementModel extends MY_Model {
             $specObj = $specObjs;
             $this->spec_model->deleteSpec(array('SpecID' => $specObj->SpecID));
         }
-        $this->DeleteRecord($this->table_requirement_arc, $where);
+        $this->DeleteRecord($this->table_requirement_pdl, $where);
         $this->DeleteRecord($this->table_requirement_lang, $where);
         $this->DeleteRecord($this->table_requirement_os, $where);
         $this->DeleteRecord($this->table_requirement_product, $where);
@@ -62,6 +62,10 @@ class RequirementModel extends MY_Model {
                 $table = $this->table_requirement_pdl;
                 $column = 'PDLID';
                 break;
+            case 'Lang':
+                $table = $this->table_requirement_lang;
+                $column = 'LangID';
+                break;
             default:
                 break;
         }
@@ -73,6 +77,44 @@ class RequirementModel extends MY_Model {
             );
             $this->InsertRecord($table, $data);
         }
+    }
+
+    public function addRequirementHandOff($data) {
+        return $this->InsertRecord($this->table_requirement_handoff, $data);
+    }
+
+    public function updateRequirementHandOff($where, $data) {
+        $this->UpdateRecord($this->table_requirement_handoff, $where, $data);
+    }
+    
+    public function delRequirementHandOff($where, $data) {
+        $this->DeleteRecord($this->table_requirement_handoff, $where, $data);
+    }
+
+    public function getRequirementHandOffDocuments($RequirementID) {
+        $this->db->order_by('SequenceNo');
+        $objs = $this->db->get_where($this->table_requirement_handoff, array('RequirementID' => $RequirementID))->result();
+        foreach ($objs as $obj) {
+            $handoffObj = $this->handoffdoc_model->getHandOffDoc(array('HandOffDocID' => $obj->HandOffDocID));
+            $obj->DocID = $obj->HandOffDocID;
+            $obj->DocName = $handoffObj->HandOffDocName;
+        }
+        return $objs;
+    }
+
+    public function getMaxSequenceNo($where) {
+        $this->db->select_max('SequenceNo');
+        return $this->db->get_where($this->table_requirement_handoff, $where)->row()->SequenceNo;
+    }
+
+    public function getRequirementHandOffArray($where) {
+        $result = array();
+        $this->db->order_by('HandOffDocID');
+        $objs = $this->db->get_where($this->table_requirement_handoff, $where)->result();
+        foreach ($objs as $obj) {
+            $result += array($obj->HandOffDocID => $obj->SequenceNo);
+        }
+        return $result;
     }
 
 }

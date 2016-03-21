@@ -1,60 +1,52 @@
 <?php
 
 $config = array(
-    'FeatureValidation' => array(
+    'CaseValidation' => array(
         array(
-            'field' => 'FeatureName',
-            'label' => '機能名',
+            'field' => 'CaseNo',
+            'label' => '案件番号',
             'rules' => 'required'),
         array(
-            'field' => 'FeatureGPDKeyword',
-            'label' => 'GPD Keyword',
-            'rules' => 'alpha_dash')
+            'field' => 'CaseTitle',
+            'label' => '案件名',
+            'rules' => 'required')
     ),
-    'OptionValidation' => array(
+    'RequirementValidation' => array(
         array(
-            'field' => 'OptionName',
-            'label' => '選択肢名',
+            'field' => 'targetProduct',
+            'label' => '対象機種',
             'rules' => 'required'),
         array(
-            'field' => 'OptionGPDKeyword',
-            'label' => 'GPD Keyword',
-            'rules' => 'alpha_dash')
-    ),
-    'LayoutValidation' => array(
-        array(
-            'field' => 'LayoutName',
-            'label' => 'レイアウト名',
-            'rules' => 'required'),
-    ),
-    'ConstraintValidation' => array(
-        array(
-            'field' => 'ConstName',
-            'label' => '禁則名',
-            'rules' => 'required')
-    ),
-    'VPValidation' => array(
-        array(
-            'field' => 'VPName',
-            'label' => '可変点名',
+            'field' => 'targetOS',
+            'label' => '対象OS',
             'rules' => 'required'),
         array(
-            'field' => 'NewVariantNames[]',
-            'label' => '変異体名',
-            'rules' => 'required')
-    ),
-    'VariantValidation' => array(
+            'field' => 'targetPDL',
+            'label' => '対象PDL',
+            'rules' => 'required'),
         array(
-            'field' => 'VariantName',
-            'label' => '変異体名',
-            'rules' => 'required')
+            'field' => 'targetLang',
+            'label' => '対象言語',
+            'rules' => 'required'),
     ),
-    'ProductValidation' => array(
+    'SpecValidation' => array(
         array(
-            'field' => 'ProductName',
-            'label' => '製品名',
-            'rules' => 'required')
-    )
+            'field' => 'targetProduct',
+            'label' => '対象機種',
+            'rules' => 'required'),
+        array(
+            'field' => 'targetOS',
+            'label' => '対象OS',
+            'rules' => 'required'),
+        array(
+            'field' => 'targetPDL',
+            'label' => '対象PDL',
+            'rules' => 'required'),
+        array(
+            'field' => 'targetLang',
+            'label' => '対象言語',
+            'rules' => 'required'),
+    ),
 );
 ?>
 

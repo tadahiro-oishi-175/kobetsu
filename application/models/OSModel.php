@@ -63,5 +63,31 @@ class OSModel extends MY_Model {
         }
         return $result;
     }
+    
+    public function getSupportedOSNameArray($category, $where) {
+        switch ($category) {
+            case 'Requirement':
+                $table = $this->table_requirement_os;
+                break;
+            case 'Spec':
+                $table = $this->table_spec_os;
+                break;
+            default:
+                $table = '';
+                break;
+        }
+        $result = array();
+        $this->db->join($this->table_os_master, $table.'.OSID='.$this->table_os_master.'.OSID');
+        $objs = $this->db->get_where($table, $where)->result();
+        
+        if (is_array($objs)) {
+            foreach ($objs as $obj) {
+                array_push($result, $obj->OSName.'_'.$obj->ArcID);
+            }
+        } else {
+            array_push($result, $objs->OSName.'_'.$obj->ArcID);
+        }
+        return $result;
+    }
 
 }

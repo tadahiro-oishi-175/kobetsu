@@ -28,7 +28,7 @@ class DocumentController extends MY_Controller {
             $data = array(
                 'OutputName' => $this->input->post('OutputName'),
             );
-            
+
             $id = $this->output_model->insertOutput($data);
             $this->EndTransaction();
             $this->ViewAllOutputs();
@@ -52,6 +52,28 @@ class DocumentController extends MY_Controller {
         }
     }
 
+    public function DeleteDocument($category, $id) {
+        $this->BeginTransaction();
+        switch ($category) {
+            case 'AttachedDoc':
+                $this->case_model->delCaseAttached(array('AttachedID' => $id));
+                $this->attached_model->deleteAttached(array('AttachedID' => $id));
+                break;
+            case 'HandOffDoc':
+                $this->requirement_model->delRequirementHandOff(array('HandOffDocID' => $id));
+                $this->handoffdoc_model->deleteHandOffDoc(array('HandOffDocID' => $id));
+                break;
+            case 'AgreeDoc':
+                $this->spec_model->delSpecAgreeDoc(array('AgreeDocID' => $id));
+                $this->agreedoc_model->deleteAgreeDoc(array('AgreeDocID' => $id));
+                break;
+            default:
+                break;
+        }
+        $this->EndTransaction();
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+
     public function DeleteOutput($OutputID) {
         $this->BeginTransaction();
 
@@ -60,4 +82,57 @@ class DocumentController extends MY_Controller {
 
         $this->EndTransaction();
     }
+
+    public function UpdateSequence($category, $id) {
+        $newOrderArray = array_flip($this->input->post('item'));
+        ksort($newOrderArray);
+
+        switch ($category) {
+            case 'AttachedDoc':
+                $where = array('CaseID' => $id);
+                $currentOrderArray = $this->case_model->getCaseAttached($where);
+                if (key($newOrderArray) == key($currentOrderArray)) {
+                    $this->BeginTransaction();
+                    foreach ($currentOrderArray as $key => $val) {
+                        if ($val != $newOrderArray[$key]) {
+                            $data = array('SequenceNo' => $newOrderArray[$key]);
+                            $this->case_model->updateCaseAttached(array('AttachedID' => $key), $data);
+                        }
+                    }
+                    $this->EndTransaction();
+                }
+                break;
+            case 'HandOffDoc':
+                $where = array('RequirementID' => $id);
+                $currentOrderArray = $this->requirement_model->getRequirementHandOffArray($where);
+                if (key($newOrderArray) == key($currentOrderArray)) {
+                    $this->BeginTransaction();
+                    foreach ($currentOrderArray as $key => $val) {
+                        if ($val != $newOrderArray[$key]) {
+                            $data = array('SequenceNo' => $newOrderArray[$key]);
+                            $this->requirement_model->updateRequirementHandOff(array('HandOffDocID' => $key), $data);
+                        }
+                    }
+                    $this->EndTransaction();
+                }
+                break;
+            case 'AgreeDoc':
+                $where = array('SpecID' => $id);
+                $currentOrderArray = $this->spec_model->getSpecAgreeDocArray($where);
+                if (key($newOrderArray) == key($currentOrderArray)) {
+                    $this->BeginTransaction();
+                    foreach ($currentOrderArray as $key => $val) {
+                        if ($val != $newOrderArray[$key]) {
+                            $data = array('SequenceNo' => $newOrderArray[$key]);
+                            $this->spec_model->updateSpecAgreeDoc(array('AgreeDocID' => $key), $data);
+                        }
+                    }
+                    $this->EndTransaction();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
 }

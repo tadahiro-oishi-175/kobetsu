@@ -1,81 +1,97 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <link href="<?= base_url() ?>application/css/style.css" rel="stylesheet" type="text/css"/>
-        <link href="<?= base_url() ?>application/css/jquery.tagit.css" rel="stylesheet" type="text/css"/>
-        <link href="<?= base_url() ?>application/js/ui/jquery-ui.css" rel="stylesheet" type="text/css"/>
-        <script src="<?= base_url() ?>application/js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="<?= base_url() ?>application/js/ui/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="<?= base_url() ?>application/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-        <script>
-            $(document).ready(function () {
-                var caseLabel = "<?= ($caseObj->CaseTypeName == '大型個別') ? 'RQ' : ($caseObj->CaseTypeName == 'trisan' ? 'trisan' : 'メンテ') ?>";
-                $("#caseLabel").text(caseLabel);
-                //$('#tag-input').tagit();
-                //$('#tag-input').tagit({placeholderText: "タグをつけよう", fieldName: "tags[]"});
-                $('#tags').tagit({
-                    fieldName: "tags",
-                    singleField: true,
-                    tagSource: ["c++", "java", "php", "javascript", "ruby", "python"],
-                    readOnly: true,
-                    sortable: 'handle',
-                    afterTagAdded: function () {
-                        //window.alert();
-                        //$(this).find('li').addClass('customStyle');
-                    }
-                });
-            });
-        </script>
-        <title></title>
-    </head>
-    <body>
-        <div id="main">
-            <?= form_open('CaseController/EditCase/' . $caseObj->CaseID) ?>
-            <table class="InputForm">
-                <tr>
-                    <th>案件管理番号</th>
-                    <td><?= $caseObj->CaseSeqNo ?></td>
-                </tr>
-            </table>
-            <br>
-            <table class="InputForm">
-                <tr>
-                    <th>案件種別</th>
-                    <td><?= $caseObj->CaseTypeName ?></td>
-                </tr>
-                <tr>
-                    <th nowrap>案件番号</th>
-                    <td><label id="caseLabel"></label><?= $caseObj->CaseNo ?></td>
-                </tr>
+<title>案件詳細</title>
+<script>
+    $(document).ready(function () {
+        var caseLabel = "<?= ($caseObj->CaseTypeName == '大型個別') ? 'RQ' : ($caseObj->CaseTypeName == 'trisan' ? 'trisan' : 'AR') ?>";
+        $("#caseLabel").text(caseLabel);
+        $("#tags").tagit({
+            fieldName: "tags",
+            singleField: true,
+            tagSource: ["c++", "java", "php", "javascript", "ruby", "python"],
+            readOnly: true,
+            sortable: 'handle',
+            afterTagAdded: function () {
+                //window.alert();
+                //$(this).find('li').addClass('customStyle');
+            },
+            onTagClicked: function () {
+                window.alert();
+            }
+        });
+        Dropzone.options.file = {
+            paramName: "file",
+            parallelUploads: 1,
+            dictMaxFilesExceeded: "一度にアップロードできるのは1ファイルまでです"
+        }
+    });
+</script>
 
-                <tr>
-                    <th nowrap>案件名</th>
-                    <td><?= $caseObj->CaseTitle ?></td>
-                </tr>
+<?= $progress ?>
+<div id="main">
+    <div id="submain">
+        <?= form_open('CaseController/EditCase/' . $caseObj->CaseID) ?>
+        <label>案件管理情報</label><?= form_submit('go_EditCaseBasicInfo', '編集') ?>
+        <table class="InputForm">
+            <tr>
+                <th>案件管理番号</th>
+                <td><?= $caseObj->CaseSeqNo ?></td>
+            </tr>
+            <tr>
+                <th>案件担当者名</th>
+                <td><?= $workerName ?></td>
+            </tr>
+            <tr>
+                <th>案件ステイタス</th>
+                <td><?= $statusName ?></td>
+            </tr>
+        </table>
+        <?= form_close(); ?>
+        <br>
+        <?= form_open('CaseController/EditCase/' . $caseObj->CaseID) ?>
+        <label>案件基本情報</label><?= form_submit('go_EditCaseDetailInfo', '編集') ?>
+        <table class="InputForm">
+            <tr>
+                <th>案件種別</th>
+                <td><?= $caseObj->CaseTypeName ?></td>
+            </tr>
+            <tr>
+                <th>案件番号</th>
+                <td><label id="caseLabel"></label><?= $caseObj->CaseNo ?></td>
+            </tr>
 
-                <tr>
-                    <th nowrap>顧客名</th>
-                    <td><?= $caseObj->CustomerName ?></td>
-                </tr>
-                
-                <tr>
-                    <th>タグ</th>
-                    <td><?= $tags ?></td>
-                </tr>
-            </table>
+            <tr>
+                <th>案件名</th>
+                <td><?= $caseObj->CaseTitle ?></td>
+            </tr>
 
-            <?= form_submit('go_EditCase', '編集') ?>
-            <?= form_close() ?>
+            <tr>
+                <th>顧客名</th>
+                <td><?= $caseObj->CustomerName ?></td>
+            </tr>
+            <tr>
+                <th>見積回答納期</th>
+                <td><?= $caseObj->ResponseDeadline ?></td>
+            </tr>
+            <tr>
+                <th>タグ</th>
+                <td><?= $tags ?></td>
+            </tr>
+        </table>
+        <?= form_close(); ?>
 
-            <?= form_open('CaseController/DeleteCase/' . $caseObj->CaseID) ?>
-            <?= form_submit('submit_EditCase', '削除') ?>
-            <?= form_close() ?>
+        <?= form_open('CaseController/DeleteCase/' . $caseObj->CaseID) ?>
+        <?= form_submit('submit_DeleteCase', 'この案件を削除', 'id="deleteCase"') ?>
+        <?= form_close() ?>
+    </div>
+    <div id="DropZone">
+        <div id="DocDropzone">
+            <label>要求資料を登録</label>
+            <form action="<?= base_url() ?>CaseController/UploadCaseDoc/<?= $caseObj->CaseID ?>" class="dropzone"/>
         </div>
-    </body>
-</html>
+        <div id="DocList">
+            <label>登録済みファイル (ドラッグでソート可能)</label>
+            <?= $docsView ?>
+        </div>
+    </div>
+</div>
+</body>
+

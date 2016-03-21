@@ -47,7 +47,7 @@ class TagModel extends MY_Model {
     public function getTagDataListHtml($where = NULL) {
         $tags = $this->getTagObjs($where);
         
-        $html = '<ul id="tags">';
+        $html = '<ul id="tags" class="InputTag">';
         foreach ($tags as $tag) {
             $html .= "<li data-value=\"$tag->TagID\">$tag->TagName</li>";
         }

@@ -37,4 +37,13 @@ class WorkerModel extends MY_Model {
     public function deleteWorker($where) {
         return $this->DeleteRecord($this->my_table_name, $where);
     }
+    
+    public function getAllWorkerNames() {
+        $result = array(NULL => '--未アサイン--');
+        $objs = $this->getAllWorkers();
+        foreach($objs as $obj) {
+            $result += array($obj->WorkerID => $obj->WorkerName);
+        }
+        return $result;
+    }
 }
